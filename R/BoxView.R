@@ -59,7 +59,7 @@ BoxView <- function(gg, ctrl, treat, label.c = "Control", label.t = "Treatment",
   p = p + theme(legend.position="right", legend.text = element_text(size=8))
   # p = p + ggrepel::geom_text_repel(aes(label=Gene, color=color))
   if(!is.null(filename)){
-    ggsave(plot=p, filename=filename, units = "in", dpi=600, width=width, height=height, ...)
+    ggsave(plot=p, filename=filename, units = "in", width=width, height=height, ...)
   }
   return(p)
 }

@@ -73,7 +73,7 @@ VolcanoView <- function(mat, x = "logFC", y = "nLogP", Label=NA, top = 0,
   p = p + theme(legend.position = "none")
 
   if(!is.null(filename)){
-    ggsave(plot=p, filename=filename, units = "in", dpi=600, ...)
+    ggsave(plot=p, filename=filename, units = "in", ...)
     saveRDS(mat, gsub(".png|.pdf|.jpg|.tiff", ".rds", filename))
   }
   return(p)
