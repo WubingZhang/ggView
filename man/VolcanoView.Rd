@@ -5,17 +5,17 @@
 \alias{VolcanoView}
 \title{Volcano View}
 \usage{
-VolcanoView(mat, x = "logFC", y = "nLogP", Label = NA, top = 0,
+VolcanoView(mat, x = "logFC", y = "adj.P.Val", Label = NA, top = 0,
   topnames = NULL, filename = NULL, x_cutoff = 0.1,
-  y_cutoff = -log10(0.05), main = NULL, xlab = "Log2 Fold Change",
+  y_cutoff = 0.05, main = NULL, xlab = "Log2 Fold Change",
   ylab = "-Log10(Adjust.P)", ...)
 }
 \arguments{
 \item{mat}{Data frame}
 
-\item{x}{Colname of mat specifying x-axis in Volcanno figure.}
+\item{x}{Colname of mat specifying x-axis in Volcanno figure, 'logFC' (default).}
 
-\item{y}{Colname of mat specifying y-axis in Volcanno figure.}
+\item{y}{Colname of mat specifying y-axis in Volcanno figure, 'adj.P.Val' (default).}
 
 \item{Label}{Colname of mat specifying labeled terms in Volcanno figure.}
 
@@ -34,7 +34,7 @@ which means don't save the figure on disk.}
 
 \item{xlab}{Label of x-axis in figure.}
 
-\item{ylab}{Label of t-axis in figure.}
+\item{ylab}{Label of y-axis in figure.}
 
 \item{...}{Other available parameters in ggsave.}
 }

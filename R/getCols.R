@@ -17,6 +17,7 @@
 #' @importFrom colorspace rainbow_hcl
 #' @importFrom scales gradient_n_pal
 #' @importFrom scales brewer_pal
+#' @export
 #'
 getCols <- function(x, palette=1){
   requireNamespace("scales")

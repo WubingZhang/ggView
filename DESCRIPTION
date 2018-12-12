@@ -6,8 +6,8 @@ Author: Wubing Zhang
 Maintainer: Wubing Zhang <Watson5bZhang@gmail.com>
 Description: Archive of personal plot functions.
 Denpends: R (>= 3.5), ggplot2, stats, grDevices, utils
-Imports: pheatmap, dendextend, ggsci, reshape, limma, ggrepel, ggpubr, RColorBrewer, colorspace, scales
+Imports: pheatmap, dendextend, ggsci, reshape, limma, ggrepel, ggpubr, RColorBrewer, colorspace, scales, DESeq2, DOSE, biomaRt, data.table, ggplot2
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

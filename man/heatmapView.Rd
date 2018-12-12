@@ -5,13 +5,16 @@
 \alias{heatmapView}
 \title{Draw heatmap}
 \usage{
-heatmapView(mat, limit = 2, cluster_rows = FALSE, cluster_cols = FALSE,
-  filename = NA, width = NA, height = NA, ...)
+heatmapView(mat, limit = c(-2, 2),
+  col = rev(colorRampPalette(c("#c12603", "white", "#0073B6"), space =
+  "Lab")(199)), filename = NA, width = NA, height = NA, ...)
 }
 \arguments{
 \item{mat}{Matrix like object, each row is gene and each column is sample.}
 
 \item{limit}{Max value in heatmap}
+
+\item{col}{colorRampPalette.}
 
 \item{filename}{File path where to save the picture.}
 

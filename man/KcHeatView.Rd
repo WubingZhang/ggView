@@ -5,9 +5,9 @@
 \alias{KcHeatView}
 \title{K-means clustering and plot Heatmap}
 \usage{
-KcHeatView(dd, limit = 2, cluster_row = TRUE, cluster_col = TRUE, k = 5,
-  filename = NA, height = 0.12 * nrow(dd) + 3, width = 0.12 * ncol(dd) +
-  7, ...)
+KcHeatView(dd, limit = 2, cluster_row = TRUE, cluster_col = TRUE,
+  k = 5, filename = NA, height = 0.12 * nrow(dd) + 3, width = 0.12
+  * ncol(dd) + 7, ...)
 }
 \arguments{
 \item{dd}{Matrix like object.}

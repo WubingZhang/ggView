@@ -7,7 +7,8 @@
 \usage{
 BoxView(gg, ctrl, treat, label.c = "Control", label.t = "Treatment",
   ylab = "Expression", xlab = NULL, colab = NULL, flip = FALSE,
-  size = 1, main = NULL, filename = NULL, width = 5, height = 4, ...)
+  size = 1, main = NULL, filename = NULL, width = 5, height = 4,
+  ...)
 }
 \arguments{
 \item{gg}{Data frame}

@@ -5,9 +5,9 @@
 \alias{SquareView}
 \title{Scatter View of MHC-I and PD-L1 level, and separate all samples by 9 square.}
 \usage{
-SquareView(mat, x = "Ctrl.Mean", y = "IFNr.Mean", option = 1, label = 0,
-  top = 10, genelist = c(), x_cutoff = c(-1, 1), y_cutoff = c(-1, 1),
-  groups = c("DN", "MP_PN", "DP", "MN_PP"))
+SquareView(mat, x = "Ctrl.Mean", y = "IFNr.Mean", option = 1,
+  label = 0, top = 10, genelist = c(), x_cutoff = c(-1, 1),
+  y_cutoff = c(-1, 1), groups = c("DN", "MP_PN", "DP", "MN_PP"))
 }
 \arguments{
 \item{mat}{Data frame, each row is gene and each column is sample.}

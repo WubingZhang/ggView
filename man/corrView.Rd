@@ -5,7 +5,8 @@
 \alias{corrView}
 \title{Compute correlation of between expression of two genesets}
 \usage{
-corrView(mat, geneset1, geneset2, xlab = geneset1[1], ylab = geneset2[1])
+corrView(mat, geneset1, geneset2, xlab = geneset1[1],
+  ylab = geneset2[1])
 }
 \arguments{
 \item{mat}{Matrix like object.}
