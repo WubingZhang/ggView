@@ -68,11 +68,11 @@ DEAnalyze <- function(obj, option = "limma", SampleAnn = NULL, type = "Microarra
     # DESeq2
     dds <- DESeq2::DESeqDataSetFromMatrix(slot(obj, "profile"), colData=slot(obj, "sampleAnn"), design=~Condition)
     dds <- DESeq2::DESeq(dds)
-    res <- as.data.frame(DESeq2::results(dds, alpha = 0.1))
+    res <- DESeq2::lfcShrink(dds, coef = 2, quiet = TRUE)
     res$padj[is.na(res$padj)] = 1
     res = res[, c("baseMean", "log2FoldChange", "stat", "pvalue", "padj")]
     colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
-    slot(obj, "DEGRes") = res
+    slot(obj, "DEGRes") = as.data.frame(res)
   }
   return(obj)
 }
