@@ -24,7 +24,7 @@ DEAnalyze <- function(obj, option = "limma", SampleAnn = NULL, type = "Microarra
     rownames(SampleAnn) = SampleAnn[,1]
     colnames(SampleAnn)[1:2] = c("Sample", "Condition")
     obj = as.matrix(obj[, SampleAnn$Sample])
-    obj = ExprDataSet(profile = obj, sampleAnn = SampleAnn, type = type)
+    obj = new("ExprDataSet", profile = obj, sampleAnn = SampleAnn, type = type)
   }
   slot(obj, "Process") <- paste0(slot(obj, "Process"), "+", option)
 
@@ -55,9 +55,10 @@ DEAnalyze <- function(obj, option = "limma", SampleAnn = NULL, type = "Microarra
     requireNamespace("limma")
     design = model.matrix(~-1+Condition, slot(obj, "sampleAnn"))
     rownames(design) = colnames(slot(obj, "profile"))
+    design[,1] = 1
     #"ls" for least squares or "robust" for robust regression
     fit = eBayes(lmFit(slot(obj, "profile"), design, na.rm=TRUE))
-    res = topTable(fit, adjust.method="BH", coef=1, number = nrow(slot(obj, "profile")))
+    res = topTable(fit, adjust.method="BH", coef=2, number = nrow(slot(obj, "profile")))
     res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
     colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
     slot(obj, "DEGRes") = res
