@@ -12,16 +12,14 @@
 #'
 #' @author Wubing Zhang
 #' @import data.table
-#' @import MAGeCKFlute
 #' @import GEOquery
 #' @import limma
 #' @export
 
 processArray <- function(expr="GSE5821_series_matrix.txt",
                          GPL="GPL96.soft", symbol=NA, org = "hsa"){
-  requireNamespace(data.table)
-  requireNamespace(MAGeCKFlute)
-  requireNamespace(GEOquery)
+  requireNamespace("data.table")
+  requireNamespace("GEOquery")
   #===Determine the parameters using shell command
   Sample_title = system(paste0("grep -n '!Sample_title' ", expr), intern = TRUE)
   Sample_title = unlist(strsplit(Sample_title, "\t\""))
