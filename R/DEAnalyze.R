@@ -40,16 +40,6 @@ DEAnalyze <- function(obj, option = "limma", SampleAnn = NULL, type = "Microarra
     }
   }
 
-  # Remove dropouts
-  if(sum(rowSums(slot(obj, "profile"))<3)>10){
-    expr = slot(obj, "profile")
-    design = as.character(slot(obj, "sampleAnn")[, 2])
-    tmp = sapply(unique(design), function(x){
-      rowSums(expr[, design==x, drop = FALSE])>2
-    })
-    slot(obj, "profile") <- expr[rowSums(tmp)>1, ]
-  }
-
   # Differential expression analysis
   if(tolower(option) == "limma"){
     requireNamespace("limma")
@@ -65,6 +55,15 @@ DEAnalyze <- function(obj, option = "limma", SampleAnn = NULL, type = "Microarra
   }
 
   if(tolower(option) == "deseq2"){
+    # Remove dropouts
+    if(sum(rowSums(slot(obj, "profile"))<3)>10){
+      expr = slot(obj, "profile")
+      design = as.character(slot(obj, "sampleAnn")[, 2])
+      tmp = sapply(unique(design), function(x){
+        rowSums(expr[, design==x, drop = FALSE])>2
+      })
+      slot(obj, "profile") <- expr[rowSums(tmp)>1, ]
+    }
     requireNamespace("DESeq2")
     # DESeq2
     dds <- DESeq2::DESeqDataSetFromMatrix(slot(obj, "profile"), colData=slot(obj, "sampleAnn"), design=~Condition)
