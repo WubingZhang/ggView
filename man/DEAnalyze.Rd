@@ -5,18 +5,20 @@
 \alias{DEAnalyze}
 \title{Differential expression analysis}
 \usage{
-DEAnalyze(obj, option = "limma", SampleAnn = NULL,
-  type = "Microarray")
+DEAnalyze(obj, SampleAnn = NULL, type = "Array", minS = 10,
+  trans.method = "vst")
 }
 \arguments{
 \item{obj}{Matrix like object or an ExprDataSet instance.}
 
-\item{option}{"limma", "DESeq2", or others.}
-
 \item{SampleAnn}{Matrix like object (only when obj is a matrix),
-the first column should match colnames in obj, and the second column should be condition}
+the rownames should match colnames in obj, and the first column should be Condition.}
 
-\item{type}{"Microarray" or "RNASeq", only needed when obj is not ExprDataSet instance.}
+\item{type}{"Array" or "RNASeq", only needed when obj is matrix like object.}
+
+\item{minS}{Same as that in `TransformCount`.}
+
+\item{trans.method}{Same as `method` in `TransformCount`.}
 }
 \value{
 An ExprDataSet instance.

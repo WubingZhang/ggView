@@ -9,7 +9,7 @@
 ##' @docType class
 ##' @slot profile Expression profile.
 ##' @slot normalizedDS Normalized dataset.
-##' @slot sampleAnn For matrix input: a DataFrame with at least two columns.
+##' @slot SampleAnn For matrix input: a DataFrame with at least two columns.
 ##' `sampleName` and `condition`.
 ##' @slot geneTable A DataFrame with gene annotations.
 ##' @slot type "Microarray" or "RNASeq".
@@ -21,9 +21,9 @@
 ##' @keywords classes
 ExprDataSet <- setClass("ExprDataSet",
          representation=representation(
-           profile        = "matrix",
-           normlizedDS    = "matrix",
-           sampleAnn    = "data.frame",
+           rawdata        = "matrix",
+           normlized      = "matrix",
+           SampleAnn      = "data.frame",
            geneTable      = "data.frame",
            type           = "character",
            GPL            = "character",
@@ -34,8 +34,8 @@ ExprDataSet <- setClass("ExprDataSet",
                             Process   = "Normalized"),
         validity=function(object)
         {
-          if(!all(object@sampleAnn[,1] %in% colnames(object@profile))){
-            return("Sample names in sampleAnn do not match colnames of expression profile.")
+          if(!all(rownames(object@SampleAnn) %in% colnames(object@rawdata))){
+            return("Sample names in SampleAnn do not match colnames of expression profile.")
           }
           return(TRUE)
         }

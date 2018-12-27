@@ -11,15 +11,13 @@
 #' @return A normalized expression profile.
 #'
 #' @author Wubing Zhang
-#' @import data.table
-#' @import GEOquery
-#' @import limma
+#' @importFrom GEOquery getGEO Table
+#' @importFrom data.table fread
+#' @importFrom limma normalizeQuantiles
 #' @export
 
 processArray <- function(expr="GSE5821_series_matrix.txt",
                          GPL="GPL96.soft", symbol=NA, org = "hsa"){
-  requireNamespace("data.table")
-  requireNamespace("GEOquery")
   #===Determine the parameters using shell command
   Sample_title = system(paste0("grep -n '!Sample_title' ", expr), intern = TRUE)
   Sample_title = unlist(strsplit(Sample_title, "\t\""))
@@ -34,14 +32,14 @@ processArray <- function(expr="GSE5821_series_matrix.txt",
   if(grepl("quantile|RMA", data_process))  quantile = FALSE
 
   #===Read expression data and map probes to genes based on GPL annotation
-  expr = fread(expr, sep = "\t", header = TRUE,
+  expr = data.table::fread(expr, sep = "\t", header = TRUE,
                stringsAsFactors = FALSE, skip = skip, fill = TRUE)
   expr = as.data.frame(expr, stringAsFactors=FALSE)
   colnames(expr) = Sample_title
   if(grepl("soft|annot", GPL)){
-    gpl <- Table(getGEO(filename = GPL))
+    gpl <- GEOquery::Table(GEOquery::getGEO(filename = GPL))
   }else{
-    gpl <- fread(GPL, sep = "\t", header = TRUE, stringsAsFactors = FALSE)
+    gpl <- data.table::fread(GPL, sep = "\t", header = TRUE, stringsAsFactors = FALSE)
   }
   gpl = as.data.frame(gpl, stringAsFactors=FALSE)
   idx = is.na(gpl$ID) | gpl$ID==""

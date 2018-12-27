@@ -19,7 +19,7 @@ This class represents the datasets of expression profiles.
 
 \item{\code{normalizedDS}}{Normalized dataset.}
 
-\item{\code{sampleAnn}}{For matrix input: a DataFrame with at least two columns.
+\item{\code{SampleAnn}}{For matrix input: a DataFrame with at least two columns.
 `sampleName` and `condition`.}
 
 \item{\code{geneTable}}{A DataFrame with gene annotations.}

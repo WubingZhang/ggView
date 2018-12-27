@@ -4,6 +4,25 @@ getDEG.ExprDataSet <- function(x) {
   return(x@DEGRes)
 }
 
+##'  Coerce to a \code{DESeqDataSet} instance
+##'
+##' @name as.DESeqDataSet
+##' @docType methods
+##' @rdname as.DESeqDataSet
+##'
+##' @title Function to coerce a \code{ExprDataSet} object to a \code{DESeqDataSet} instance.
+##' @param object A \code{ExprDataSet} instance.
+##' @param ... additional parameter
+##' @return A \code{DESeqDataSet} instance.
+##' @export
+##' @usage as.DESeqDataSet(object)
+##' @author Wubing Zhang
+as.DESeqDataSet.ExprDataSet <- function(object) {
+  dds = DESeqDataSetFromMatrix(slot(object, "rawdata"),
+        colData = slot(object, "SampleAnn"), design = ~Condition)
+  return(dds)
+}
+
 ##' @method dim ExprDataSet
 ##' @export
 dim.ExprDataSet <- function(x) {
