@@ -5,7 +5,7 @@
 \alias{DEAnalyze}
 \title{Differential expression analysis}
 \usage{
-DEAnalyze(obj, SampleAnn = NULL, type = "Array", minS = 10,
+DEAnalyze(obj, SampleAnn = NULL, type = "Array", minS = 2,
   trans.method = "vst")
 }
 \arguments{
