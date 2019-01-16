@@ -27,7 +27,7 @@
 #'
 #' @author Wubing Zhang
 #'
-#' @importFrom reshape melt
+#' @importFrom reshape2 melt
 #' @import ggpubr
 #'
 #' @export
@@ -39,7 +39,7 @@ BoxView <- function(gg, ctrl, treat, label.c = "Control", label.t = "Treatment",
   gg$Label[ctrl] = label.c
   gg$Label[treat] = label.t
   gg$Label = factor(gg$Label, levels = c(label.c, label.t))
-  gg = reshape::melt(gg, id="Label")
+  gg = reshape2::melt(gg, id="Label")
   gg = gg[!is.na(gg$value), ]
   #=====Boxplot and compare paired samples====
   p = ggboxplot(gg, x="variable", y="value", color="Label", size=size,

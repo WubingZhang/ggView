@@ -1,0 +1,54 @@
+#' Dodge barplot
+#'
+#' dodge barplot for each column
+#'
+#' @docType methods
+#' @name dodgeBarView
+#' @rdname dodgeBarView
+#'
+#' @param gg Data frame
+#' @param x Can be integer (variable position) or string (variable name).
+#' @param xlab Label of x-axis
+#' @param ylab Label of y-axis
+#' @param colab Label of color
+#' @param main As in 'plot'.
+#' @param filename Figure file name to create on disk. Default filename="NULL", which means
+#' don't save the figure on disk.
+#' @param width As in ggsave.
+#' @param height As in ggsave.
+#' @param ... Other available parameters in ggsave.
+#'
+#' @return An object created by \code{ggplot}, which can be assigned and further customized.
+#'
+#' @author Wubing Zhang
+#'
+#' @importFrom reshape2 melt
+#' @import ggplot2
+#'
+#' @export
+
+dodgeBarView <- function(gg, x = 0, xlab = NULL, ylab = "Count",
+                         colab = NULL, main=NULL,
+                         filename=NULL, width=5, height =4, ...){
+  requireNamespace("ggplot2")
+  # gg = gg[, sort(colnames(gg))]
+  if(x==0){
+    gg$x = 1:nrow(gg)
+  }else{
+    idx = ifelse(is.integer(x), x, which(colnames(gg)==x))
+    colnames(gg)[idx] = "x"
+  }
+  gg = reshape2::melt(gg, id = "x")
+  p = ggplot(gg, aes(x = x, y=value))
+  p = p + geom_bar(aes(fill = variable), stat="identity",
+                   position = position_dodge(width=1))
+  p = p + labs(x = xlab, y = ylab, title = main, fill = colab)
+  p = p + scale_x_continuous(expand = c(0,0), breaks = unique(gg$x))
+  p = p + scale_y_continuous(expand = c(0,0))
+  p = p + theme_classic()
+  if(!is.null(filename)){
+    ggsave(plot=p, filename=filename, units = "in", width=width, height=height, ...)
+  }
+  return(p)
+}
+

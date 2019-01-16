@@ -23,7 +23,7 @@
 DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array",
                         minS = 2, trans.method = "vst"){
   if(is.matrix(obj) | is.data.frame(obj)){
-    colname(SampleAnn)[1] = "Condition"
+    colnames(SampleAnn)[1] = "Condition"
     expr <- as.matrix(obj[, rownames(SampleAnn)])
     obj = new("ExprDataSet", rawdata = expr, SampleAnn = SampleAnn, type = type)
   }

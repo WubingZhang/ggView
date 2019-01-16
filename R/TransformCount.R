@@ -8,7 +8,7 @@
 #' @param m raw count matrix (genes are rows, columns are samples)
 #' @param minS numeric; minimum number of samples in which count threshold has to be
 #' reached; defaults to a tenth of available samples
-#' @param method the normalization method, one of "TPM", "voom", "vst", "rlog".
+#' @param method the normalization method, one of "none", "TPM", "voom", "vst", "rlog".
 #' @param idType same as in 'Count2TPM', only required when method = "TPM".
 #' @param org same as in 'Count2TPM', only required when method = "TPM".
 #'
@@ -26,7 +26,9 @@ TransformCount <- function(m, minS=ncol(m)/2, method=c("TPM", "voom", "vst", "rl
   m_sel <- m[sel, ]
 
   # Count data transformations
-  if (method == "TPM") { v <- Count2TPM(m_sel, idType=idType, org=org)
+  if (method == "none"){
+    v = m_sel
+  }else if (method == "TPM") { v <- Count2TPM(m_sel, idType=idType, org=org)
   } else if(method == "voom") {
     dge <- edgeR::DGEList(m_sel)
     dge <- edgeR::calcNormFactors(dge)
@@ -35,6 +37,8 @@ TransformCount <- function(m, minS=ncol(m)/2, method=c("TPM", "voom", "vst", "rl
     v <- DESeq2::varianceStabilizingTransformation(m_sel, blind = FALSE)
   } else if(method == "rlog"){
     v <- DESeq2::rlog(m_sel, blind = FALSE)
+  }else{
+    stop("Undefined normalization method !")
   }
   return(v)
 }

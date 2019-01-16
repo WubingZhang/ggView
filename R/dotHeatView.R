@@ -9,13 +9,13 @@
 #' and further customized.
 #'
 #' @author Wubing Zhang
-#' @import reshape
+#' @import reshape2
 #' @import ggplot2
 #' @export
 
 dotHeatView <- function(mat){
   mat$Gene = rownames(mat)
-  gg = reshape::melt(mat, id="Gene")
+  gg = reshape2::melt(mat, id="Gene")
   gg$Gene = factor(gg$Gene, levels = rownames(mat))
   gg = gg[!is.na(gg$value), ]
   gg$value[gg$value>2] = 2

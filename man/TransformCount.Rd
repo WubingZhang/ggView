@@ -16,7 +16,7 @@ TransformCount(m, minS = ncol(m)/2, method = c("TPM", "voom", "vst",
 \item{minS}{numeric; minimum number of samples in which count threshold has to be
 reached; defaults to a tenth of available samples}
 
-\item{method}{the normalization method, one of "TPM", "voom", "vst", "rlog".}
+\item{method}{the normalization method, one of "none", "TPM", "voom", "vst", "rlog".}
 
 \item{idType}{same as in 'Count2TPM', only required when method = "TPM".}
 
