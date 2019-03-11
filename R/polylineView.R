@@ -45,7 +45,13 @@ polylineView <- function(gg, x = 0, xlab = NULL, ylab = "Count",
   p = p + labs(x = xlab, y = ylab, color = colab, title = main)
   p = p + scale_x_continuous(breaks = unique(gg$x))
   p = p + scale_y_continuous(expand = c(0,0))
-  p = p + theme_classic()
+  p = p + theme(text = element_text(colour="black",size = 14, family = "Helvetica"),
+                plot.title = element_text(hjust = 0.5, size=18),
+                axis.text = element_text(colour="gray10"))
+  p = p + theme(axis.line = element_line(size=0.5, colour = "black"),
+                panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                panel.border = element_blank(), panel.background = element_blank(),
+                legend.key = element_blank())
 
   if(!is.null(filename)){
     ggsave(plot=p, filename=filename, units = "in", width=width, height=height, ...)
