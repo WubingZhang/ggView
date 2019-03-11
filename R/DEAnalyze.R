@@ -55,7 +55,6 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
     res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
     colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
   }else if(tolower(type) == "rnaseq"){
-    design = model.matrix(~-1+Condition, slot(obj, "SampleAnn"))
     rownames(design) = colnames(slot(obj, "rawdata"))
     idx_r <- filterByExpr(slot(obj, "rawdata"), design)
     slot(obj, "rawdata") = slot(obj, "rawdata")[idx_r, ]
@@ -74,9 +73,11 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       requireNamespace("limma")
       slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "voom")
       # limma:voom
-      dge <- voom(slot(obj, "rawdata"), design, plot=FALSE)
+      dge <- DGEList(counts=slot(obj, "rawdata"))
+      dge <- calcNormFactors(dge)
+      dge <- voom(dge, design, plot=FALSE)
       fit <- eBayes(lmFit(dge, design))
-      res = topTable(fit, adjust.method="BH", coef=2, number = nrow(slot(obj, "normlized")))
+      res = topTable(fit, adjust.method="BH", coef=2, number = nrow(slot(obj, "rawdata")))
       res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
     }
