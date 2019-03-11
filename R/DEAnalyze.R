@@ -58,7 +58,7 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
   }else if(tolower(type) == "rnaseq"){
     idx_r <- filterByExpr(slot(obj, "rawdata"), design)
     slot(obj, "rawdata") = slot(obj, "rawdata")[idx_r, ]
-    if(method == "DESeq2"){
+    if(tolower(method) == "deseq2"){
       requireNamespace("DESeq2")
       slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "vst")
       # DESeq2
@@ -68,8 +68,7 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       res$padj[is.na(res$padj)] = 1
       res = res[, c("baseMean", "log2FoldChange", "stat", "pvalue", "padj")]
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
-    }
-    if(method == "limma"){
+    }else if(tolower(method) == "limma"){
       requireNamespace("limma")
       slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "voom")
       # limma:voom
@@ -80,8 +79,7 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       res = topTable(fit, adjust.method="BH", coef=2, number = nrow(slot(obj, "rawdata")))
       res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
-    }
-    if(method == "gfold"){
+    }else if(tolower(method) == "gfold"){
       slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "voom")
       # GFOLD
       tmp = mapply(function(x){
@@ -99,6 +97,8 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
       tmp = file.remove(paste0(ctrlname, ".txt"), paste0(treatname, ".txt"),
                         "gfold_tmp", "gfold_tmp.ext")
+    }else{
+      stop("Method not available !!!")
     }
   }else{
     stop("Data type error! ")
