@@ -43,19 +43,19 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
   }
 
   ## Differential expression analysis ##
+  design = model.matrix(~-1+Condition, slot(obj, "SampleAnn"))
+  rownames(design) = colnames(slot(obj, "rawdata"))
+  design[,1] = 1
+
   if(tolower(type) == "array"){
     requireNamespace("limma")
     slot(obj, "normlized") = normalizeQuantiles(slot(obj, "rawdata"))
-    design = model.matrix(~-1+Condition, slot(obj, "SampleAnn"))
-    rownames(design) = colnames(slot(obj, "normlized"))
-    design[,1] = 1
     #"ls" for least squares or "robust" for robust regression
     fit = eBayes(lmFit(slot(obj, "normlized"), design, na.rm=TRUE))
     res = topTable(fit, adjust.method="BH", coef=2, number = nrow(slot(obj, "normlized")))
     res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
     colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
   }else if(tolower(type) == "rnaseq"){
-    rownames(design) = colnames(slot(obj, "rawdata"))
     idx_r <- filterByExpr(slot(obj, "rawdata"), design)
     slot(obj, "rawdata") = slot(obj, "rawdata")[idx_r, ]
     if(method == "DESeq2"){
