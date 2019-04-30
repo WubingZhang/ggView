@@ -6,7 +6,7 @@
 \title{Differential expression analysis}
 \usage{
 DEAnalyze(obj, SampleAnn = NULL, type = "Array", method = "limma",
-  app.dir = "/Users/Wubing/Applications/gfold/gfold")
+  paired = FALSE, app.dir = "/Users/Wubing/Applications/gfold/gfold")
 }
 \arguments{
 \item{obj}{Matrix like object or an ExprDataSet instance.}
@@ -17,6 +17,8 @@ the rownames should match colnames in obj, and the first column should be Condit
 \item{type}{"Array" or "RNASeq", only needed when obj is matrix like object.}
 
 \item{method}{Differential expression analysis method, e.g. limma, DESeq2, GFOLD.}
+
+\item{paired}{Boolean, specifying whether perform paired comparison.}
 
 \item{app.dir}{The path to application (e.g. GFOLD).}
 }

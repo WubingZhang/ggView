@@ -19,7 +19,7 @@
 #' @importFrom DESeq2 varianceStabilizingTransformation rlog
 #' @export
 
-TransformCount <- function(m, minS=ncol(m)/2, method=c("TPM", "voom", "vst", "rlog")[1],
+TransformCount <- function(m, minS=ncol(m)/10, method=c("TPM", "voom", "vst", "rlog")[1],
                            idType = "Ensembl", org="hsa") {
   # pre-filtering
   sel <- rowSums(m >= 0) >= minS
@@ -30,9 +30,10 @@ TransformCount <- function(m, minS=ncol(m)/2, method=c("TPM", "voom", "vst", "rl
     v = m_sel
   }else if (method == "TPM") { v <- Count2TPM(m_sel, idType=idType, org=org)
   } else if(method == "voom") {
-    dge <- edgeR::DGEList(m_sel)
-    dge <- edgeR::calcNormFactors(dge)
-    v <- limma::voom(dge)$E
+    v <- filterNvoom(m, minSamples=minS, minCpm=0.25)$E
+    # dge <- edgeR::DGEList(m_sel)
+    # dge <- edgeR::calcNormFactors(dge)
+    # v <- limma::voom(dge)$E
   } else if(method == "vst"){
     v <- DESeq2::varianceStabilizingTransformation(m_sel, blind = FALSE)
   } else if(method == "rlog"){

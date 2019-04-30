@@ -5,6 +5,7 @@
 #' @rdname dotHeatView
 #'
 #' @param mat Matrix like object, each row is gene and each column is sample.
+#' @param limit Two-length vector.
 #' @return An object created by \code{ggplot}, which can be assigned
 #' and further customized.
 #'
@@ -13,13 +14,14 @@
 #' @import ggplot2
 #' @export
 
-dotHeatView <- function(mat){
+dotHeatView <- function(mat, limit = c(-2,2)){
+  mat = as.data.frame(mat)
   mat$Gene = rownames(mat)
   gg = reshape2::melt(mat, id="Gene")
   gg$Gene = factor(gg$Gene, levels = rownames(mat))
   gg = gg[!is.na(gg$value), ]
-  gg$value[gg$value>2] = 2
-  gg$value[gg$value< -2] = -2
+  gg$value[gg$value>limit[2]] = limit[2]
+  gg$value[gg$value<limit[1]] = limit[1]
   gg$size = abs(gg$value)
   # gg = gg[gg$size>0.1, ]
   p = ggplot(gg, aes(x=Gene, y=variable))

@@ -5,10 +5,12 @@
 \alias{dotHeatView}
 \title{Dot heatmap}
 \usage{
-dotHeatView(mat)
+dotHeatView(mat, limit = c(-2, 2))
 }
 \arguments{
 \item{mat}{Matrix like object, each row is gene and each column is sample.}
+
+\item{limit}{Two-length vector.}
 }
 \value{
 An object created by \code{ggplot}, which can be assigned

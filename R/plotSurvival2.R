@@ -1,3 +1,32 @@
+##' Custom version of Kaplan Meier plot
+##'
+##' Custom display of survival data, including plotting lines for median survival and adding number at risk
+##' @param survFit survfit object; survfit(Surv(TTE, Cens) ~ group, data=df)
+##' @param survDiff surfdiff object; survdiff(Surv(TTE, Cens) ~ group, data=df)
+##' @param diff.factor factor, the grouping factor used for survfit call
+##' @param main character; main title for plot
+##' @param cols character vector; colors, default to darkgreen, darkmagenta, cyan4, darkorange, darkred
+##' @param xLab character; x-axis label for plot
+##' @param yLab character; y-axis label for plot
+##' @param ltypes numeric vector; line types (lty) for plot
+##' @param plotMedian logical; shall the median survival for each group be plotted
+##' @param pval type of p-value computed, either "logrank" or "coxph" (the latter
+##' can only be computed on two groups)
+##' @param coxphData coxph object; coxphData <- coxph(Surv(TTE, Cens) ~ group, data=df)
+##' @param legPos legend position for legend()
+##' @param mar plotting margins
+##' @param plot.nrisk logical; shall number of samples for each group and time point
+##' be plotted underneath graph
+##' @param nrisk.interval numeric; spacing of time intervals for which number of samples
+##'                is given; defaults to 2
+##' @param timemark logical; if set to TRUE (default), censoring marks are added to survival curves
+##' @param lwd line width for survival curves
+##' @param cexMedian numeric; relative size of font for median survival times
+##' @param cexLegend numeric; relative size of legend font
+##' @param ... other arguments passed to plot.survfit
+##' @author Yuanyuan Xiao, Dorothee Nickles
+##' @export
+##' @import survival
 plotSurvival2 <- function(survFit,
                           survDiff,
                           diff.factor,
@@ -18,27 +47,27 @@ plotSurvival2 <- function(survFit,
                           cexMedian=0.75,
                           cexLegend=0.8,
                           ...) {
-  
-  
+
+
   stopifnot(is(survFit, "survfit"))
   stopifnot(is(survDiff, "survdiff"))
   stopifnot(is(diff.factor, "factor"))
-  
+
   ## simple checks to decrease chance that fitted data used indeed
   ## same data and same calls
   fitCall <- as.character(survFit$call)
   diffCall <- as.character(survDiff$call)
   stopifnot(fitCall[2] == diffCall[2])
   stopifnot(fitCall[3] == diffCall[3])
-  
+
   group.labels <- levels(diff.factor)
-  
+
   ## setting colors
   if (missing(cols)) {
     cols <- c("darkgreen", "darkmagenta", "cyan4", "darkorange", "darkred")[1:nlevels(diff.factor)]
   }
   stopifnot(length(cols) == length(group.labels))
-  
+
   ## computing number of samples at each time point
   if (plot.nrisk) {
     time.pt <- seq(0, max(survFit$time), nrisk.interval)
@@ -54,14 +83,14 @@ plotSurvival2 <- function(survFit,
       ix = ix + survFit$strata[kk]
     }
     dimnames(n.risk)[[2]] = time.pt
-    
+
     if (mar[1]<4+length(group.labels)) {
       mar[1] <- 4+length(group.labels)
     }
     org.mar <- par()$mar
     par(mar=mar)
   }
-  
+
   ## plot curves and axes
   plot(survFit,
        xlab=xLab,
@@ -84,7 +113,7 @@ plotSurvival2 <- function(survFit,
        las=2)
   abline(h=0,
          col="darkgrey")
-  
+
   ## add the survival medians
   if (plotMedian) {
     median.surv <- summary(survFit)$table[,"median"]
@@ -107,7 +136,7 @@ plotSurvival2 <- function(survFit,
            col=cols[wMed][i])
     }
   }
-  
+
   ## add the number of samples underneath plot
   if (plot.nrisk) {
     for (i in 1:length(group.labels)) {
@@ -126,13 +155,11 @@ plotSurvival2 <- function(survFit,
             cex=0.8)
     }
   }
-  
+
   ## compute statistics
   if (pval == "logrank") {
-    pval <- round(1 - pchisq(survDiff$chisq, length(survDiff$n) - 1),
-                  digits=3)
-    group.labels <- c(group.labels,
-                      paste("log rank pval:", pval))
+    pval <- signif(1 - pchisq(survDiff$chisq, length(survDiff$n) - 1), digits=2)
+    group.labels <- c(group.labels, paste("log rank pval:", pval))
   }
   if (pval == "coxph") {
     stopifnot(!missing(coxphData))
@@ -141,7 +168,7 @@ plotSurvival2 <- function(survFit,
     stopifnot(fitCall[2] == coxCall)
     stopifnot(sum(survFit$n) == coxphData$n)
     stopifnot(length(group.labels) == 2)
-    
+
     tmp <- round(getHRandCIfromCoxph(coxphData),
                  digits=4)
     group.labels <- c(group.labels,
@@ -150,7 +177,7 @@ plotSurvival2 <- function(survFit,
                             paste0(tmp[1,"HR"], " (", tmp[1,"CIl0.95"], ";",
                                    tmp[1,"CIu0.95"], ")")))
   }
-  
+
   ## plot legend
   legend(legPos,
          group.labels,
@@ -160,10 +187,10 @@ plotSurvival2 <- function(survFit,
          legend=group.labels,
          bty="n",
          cex=cexLegend)
-  
+
   ## reset mar that was changed to allow adding numbers underneath plot
   if (plot.nrisk) {
     par(mar=org.mar)
-   }
-  
+  }
+
 }

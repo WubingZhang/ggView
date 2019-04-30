@@ -39,7 +39,9 @@ processArray <- function(expr="GSE5821_series_matrix.txt",
   if(grepl("soft|annot", GPL)){
     gpl <- GEOquery::Table(GEOquery::getGEO(filename = GPL))
   }else{
-    gpl <- data.table::fread(GPL, sep = "\t", header = TRUE, stringsAsFactors = FALSE)
+    gpl = read.table(GPL, sep = "\t", header = TRUE,
+                     stringsAsFactors = FALSE,
+                     quote = "", fill = TRUE)
   }
   gpl = as.data.frame(gpl, stringAsFactors=FALSE)
   idx = is.na(gpl$ID) | gpl$ID==""

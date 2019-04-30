@@ -7,7 +7,7 @@
 This wrapper function combines filtering out genes with low reads
 in a number of samples with normalization.}
 \usage{
-TransformCount(m, minS = ncol(m)/2, method = c("TPM", "voom", "vst",
+TransformCount(m, minS = ncol(m)/10, method = c("TPM", "voom", "vst",
   "rlog")[1], idType = "Ensembl", org = "hsa")
 }
 \arguments{
