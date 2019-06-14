@@ -6,24 +6,23 @@
 #' @param title plot title
 #' @param seg_height height of segments
 #' @param base_size base font size
-#' @param show_pvalue boolean, specifying whether show the enrichment significance.
 #' @return ggplot object.
 #' @export
 #' @import ggplot2
 #' @author Wubing Zhang
 #'
 gseaView <- function(x, geneSetID, title = "", seg_height = 0.08,
-                     base_size = 11, show_pvalue = TRUE) {
+                     base_size = 11) {
 
   if (length(geneSetID) == 1) {
     gsdata <- gsInfo(x, geneSetID)
   } else {
     gsdata <- do.call(rbind, lapply(geneSetID, gsInfo, object = x))
   }
-  if(show_pvalue){
-    gsdata$Description = paste0(gsdata$Description, " (",
-                                format(gsdata$pvalue, scientific = TRUE, digits = 3), ")")
-  }
+  gsdata = gsdata[order(gsdata$pvalue), ]
+  gsdata$Description = paste0(gsdata$Description, " (",
+                              format(gsdata$pvalue, scientific = TRUE, digits = 3), ")")
+  gsdata$Description = factor(gsdata$Description, levels = unique(gsdata$Description))
   i <- round(min(gsdata$runningScore)-0.02, 2)
   for (term in unique(gsdata$Description)) {
     idx <- which(gsdata$ymin != 0 & gsdata$Description == term)
@@ -35,7 +34,6 @@ gseaView <- function(x, geneSetID, title = "", seg_height = 0.08,
   p <- p + geom_line(aes_(y = ~runningScore), size=1)
   p <- p + geom_linerange(aes_(ymin=~ymin, ymax=~ymax))
   p <- p + labs(x = NULL, y = "Running Enrichment Score", title = title)
-  p <- p + scale_x_continuous(expand=c(0,0))
   p <- p + scale_y_continuous(breaks = seq(round(min(gsdata$runningScore),1), round(max(gsdata$runningScore),1), by = 0.2),
                               expand=c(0,0))
   p <- p + theme_classic(base_size)

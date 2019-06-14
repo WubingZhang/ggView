@@ -23,7 +23,7 @@
 #' @export
 
 DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
-                      paired = FALSE,
+                      paired = FALSE, minS=1,
                       app.dir = "/Users/Wubing/Applications/gfold/gfold"){
   requireNamespace("edgeR")
   ## Create a new object ##
@@ -47,11 +47,12 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
 
   ## Differential expression analysis ##
   if(paired){
-    design = model.matrix(~Sibs+Condition, slot(obj, "SampleAnn"))
+    Sibs = factor(slot(obj, "SampleAnn")$Sibs)
+    Condition = factor(slot(obj, "SampleAnn")$Condition)
+    design = model.matrix(~Sibs+Condition)
   }else{
-    design = model.matrix(~-1+Condition, slot(obj, "SampleAnn"))
+    design = model.matrix(~1+Condition, slot(obj, "SampleAnn"))
     rownames(design) = colnames(slot(obj, "rawdata"))
-    design[,1] = 1
   }
 
   ## Filter out Genes By Expression Level
@@ -70,10 +71,9 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
   }else if(tolower(type) == "rnaseq"){
     if(tolower(method) == "deseq2"){
       requireNamespace("DESeq2")
-      slot(obj, "normlized") = TransformCount(data, method = "vst")
+      slot(obj, "normlized") = TransformCount(data, minS = minS, method = "vst")
       # DESeq2
       dds = DESeqDataSetFromMatrix(data, colData = slot(obj, "SampleAnn"), design = design)
-      if(paired) design(dds) = formula(~Sibs+Condition)
       dds <- DESeq2::DESeq(dds)
       res <- DESeq2::lfcShrink(dds, coef = ncol(design), quiet = TRUE)
       res$padj[is.na(res$padj)] = 1
@@ -81,7 +81,7 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
     }else if(tolower(method) == "limma"){
       requireNamespace("limma")
-      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "voom")
+      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), minS = minS, method = "voom")
       # limma:voom
       dge <- DGEList(counts=data)
       dge <- calcNormFactors(dge)
@@ -91,7 +91,7 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
     }else if(tolower(method) == "gfold"){
-      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "voom")
+      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), minS = minS, method = "voom")
       # GFOLD
       tmp = mapply(function(x){
         write.table(cbind(NA, data[,x], NA, NA),

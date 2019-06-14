@@ -1,3 +1,21 @@
+##' Filtering a count matrix to remove low read genes
+##'
+##' This function takes a count matrix and removes genes that don't reach a minimum number of reads in a certain number of samples.
+##' @param m raw count matrix (genes are rows, columns are samples)
+##' @param minSamples numeric; minimum number of samples in which CPM threshold has to be reached; defaults to a tenth of available samples
+##' @param minCpm numeric; the minimum counts per million (CPM) that has to be reached
+##' @return filtered count matrix
+##' @author Dorothee Nickles
+##' @import edgeR
+##' @export
+filterNvoom <- function(m, minSamples=ncol(m)/10, minCpm=0.25) {
+  tmp <- edgeR::cpm(m)
+  sel <- apply(tmp, 1, function(x) {
+    sum(x >= minCpm) >= minSamples
+  })
+  return(m[sel,])
+}
+
 #' Filter and normalize a count matrix
 #' This wrapper function combines filtering out genes with low reads
 #' in a number of samples with normalization.
@@ -30,7 +48,7 @@ TransformCount <- function(m, minS=ncol(m)/10, method=c("TPM", "voom", "vst", "r
     v = m_sel
   }else if (method == "TPM") { v <- Count2TPM(m_sel, idType=idType, org=org)
   } else if(method == "voom") {
-    v <- filterNvoom(m, minSamples=minS, minCpm=0.25)$E
+    v <- filterNvoom(m, minSamples=minS, minCpm=0.25)
     # dge <- edgeR::DGEList(m_sel)
     # dge <- edgeR::calcNormFactors(dge)
     # v <- limma::voom(dge)$E

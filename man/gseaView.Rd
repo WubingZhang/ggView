@@ -4,8 +4,7 @@
 \alias{gseaView}
 \title{gseaView}
 \usage{
-gseaView(x, geneSetID, title = "", seg_height = 0.08, base_size = 11,
-  show_pvalue = TRUE)
+gseaView(x, geneSetID, title = "", seg_height = 0.08, base_size = 11)
 }
 \arguments{
 \item{x}{gseaResult object}
@@ -17,8 +16,6 @@ gseaView(x, geneSetID, title = "", seg_height = 0.08, base_size = 11,
 \item{seg_height}{height of segments}
 
 \item{base_size}{base font size}
-
-\item{show_pvalue}{boolean, specifying whether show the enrichment significance.}
 }
 \value{
 ggplot object.

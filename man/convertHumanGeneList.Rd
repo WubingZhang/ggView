@@ -4,10 +4,15 @@
 \alias{convertHumanGeneList}
 \title{Basic function to convert human to mouse gene names}
 \usage{
-convertHumanGeneList(x)
+convertHumanGeneList(x, idType = "Symbol",
+  ref = "~/Jobs/Archive/GeneLists/GeneAnnotation/HOM_MouseHumanSequence.txt")
 }
 \arguments{
-\item{x}{A vector of gene symbols.}
+\item{x}{A vector of genes.}
+
+\item{idType}{Entrez Or Symbol}
+
+\item{ref}{Reference table}
 }
 \description{
 Basic function to convert human to mouse gene names

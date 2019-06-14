@@ -6,7 +6,8 @@
 \title{Differential expression analysis}
 \usage{
 DEAnalyze(obj, SampleAnn = NULL, type = "Array", method = "limma",
-  paired = FALSE, app.dir = "/Users/Wubing/Applications/gfold/gfold")
+  paired = FALSE, minS = 1,
+  app.dir = "/Users/Wubing/Applications/gfold/gfold")
 }
 \arguments{
 \item{obj}{Matrix like object or an ExprDataSet instance.}
