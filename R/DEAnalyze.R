@@ -27,7 +27,6 @@ DEAnalyze <- function(obj, SampleAnn = NULL,
                       type = "Array", method = "limma",
                       paired = FALSE,
                       app.dir = "/Users/Wubing/Applications/gfold/gfold"){
-  requireNamespace("edgeR")
   #### Create a new object ####
   if(is.matrix(obj) | is.data.frame(obj)){
     colnames(SampleAnn)[1] = "Condition"
@@ -110,17 +109,18 @@ DEAnalyze <- function(obj, SampleAnn = NULL,
       stop("Method not available for RNA-seq data !!!")
     }
   }else if(tolower(type) == "msms"){
+    slot(obj, "normlized") = data
     if (tolower(method) == "limma"){
       requireNamespace("limma")
-      slot(obj, "normlized") = data
       #"ls" for least squares or "robust" for robust regression
       fit = eBayes(lmFit(slot(obj, "normlized"), design))
       res = topTable(fit, adjust.method="BH", coef=ncol(design), number = Inf)
       res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
     }else if(grepl("^glm\\.", tolower(method))){
-      fd <- data.frame(gene = rownames(exprSet),
-                       row.names = rownames(exprSet),
+      requireNamespace("msmsTests")
+      fd <- data.frame(gene = rownames(slot(obj, "normlized")),
+                       row.names = rownames(slot(obj, "normlized")),
                        stringsAsFactors = FALSE)
       MSnSet_obj <- MSnSet(exprs=slot(obj, "normlized"), fData=fd,
                            pData=slot(obj, "SampleAnn"))
