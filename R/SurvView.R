@@ -1,6 +1,7 @@
 #' @export
 SurvView <- function(SampleAnn, bio = "sgTRAF3",
                      os = "os", event = "event", group = 4,
+                     glabels = c("1st Quart", "2nd Quart", "3rd Quart", "4th Quart"),
                      main="CD8 T-effector, survival",
                      plotMedian=FALSE,
                      plot.nrisk=FALSE){
@@ -20,8 +21,7 @@ SurvView <- function(SampleAnn, bio = "sgTRAF3",
   tmpDat$group <- cut(tmpDat[, bio],
                       quantile(tmpDat[, bio], seq(0, 1, by = 1/group)),
                       include.lowest = TRUE)
-  tmpDat$group <- factor(tmpDat$group,
-                         labels=c("TRAF3.high", "TRAF3.low", "High2", "High3")[1:group])
+  tmpDat$group <- factor(tmpDat$group, labels=glabels)
   fittedSurv <- survfit(Surv(time=os, event=event) ~ group, data=tmpDat)
   diffSurv <- survdiff(Surv(time=os, event=event) ~ group, data=tmpDat)
   ggView::plotSurvival2(survFit=fittedSurv,

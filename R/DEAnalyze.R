@@ -7,8 +7,9 @@
 #' @param obj Matrix like object or an ExprDataSet instance.
 #' @param SampleAnn Matrix like object (only when obj is a matrix),
 #' the rownames should match colnames in obj, and the first column should be Condition.
-#' @param type "Array" or "RNASeq", only needed when obj is matrix like object.
-#' @param method Differential expression analysis method, e.g. limma, DESeq2, GFOLD.
+#' @param type "Array", "RNASeq" or "msms", only needed when obj is matrix like object.
+#' @param method Differential expression analysis method, e.g. limma, DESeq2, GFOLD,
+#' glm.pois, glm.qlll, and glm.nb.
 #' @param paired Boolean, specifying whether perform paired comparison.
 #' @param app.dir The path to application (e.g. GFOLD).
 #'
@@ -19,14 +20,15 @@
 #'
 #' @importFrom limma eBayes topTable lmFit
 #' @importFrom DESeq2 DESeqDataSetFromMatrix results DESeq design
-#' @importFrom edgeR filterByExpr
+#' @import msmsTests
 #' @export
 
-DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
-                      paired = FALSE, minS=1,
+DEAnalyze <- function(obj, SampleAnn = NULL,
+                      type = "Array", method = "limma",
+                      paired = FALSE,
                       app.dir = "/Users/Wubing/Applications/gfold/gfold"){
   requireNamespace("edgeR")
-  ## Create a new object ##
+  #### Create a new object ####
   if(is.matrix(obj) | is.data.frame(obj)){
     colnames(SampleAnn)[1] = "Condition"
     if(paired) colnames(SampleAnn)[2] = "Sibs"
@@ -34,18 +36,7 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
     obj = new("ExprDataSet", rawdata = expr, SampleAnn = SampleAnn, type = type)
   }
 
-  ## Fill missing values in expression profile ##
-  if(sum(is.na(slot(obj, "rawdata")))>0){
-    design = as.vector(slot(obj, "SampleAnn")[, 1])
-    for(cond in unique(design)){
-      idx = design==cond
-      tmp = slot(obj, "rawdata")[, idx, drop = FALSE]
-      tmp[is.na(tmp)] = rowMeans(tmp, na.rm = TRUE)[which(is.na(tmp), arr.ind = TRUE)[,1]]
-      slot(obj, "rawdata")[, idx] = tmp
-    }
-  }
-
-  ## Differential expression analysis ##
+  #### Build design matrix ####
   if(paired){
     Sibs = factor(slot(obj, "SampleAnn")$Sibs)
     Condition = factor(slot(obj, "SampleAnn")$Condition)
@@ -54,24 +45,20 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
     design = model.matrix(~1+Condition, slot(obj, "SampleAnn"))
     rownames(design) = colnames(slot(obj, "rawdata"))
   }
-
-  ## Filter out Genes By Expression Level
-  idx_r <- filterByExpr(slot(obj, "rawdata"), design, min.count = 0,
-                        min.total.count = ncol(slot(obj, "rawdata")))
+  idx_r = rowSums(slot(obj, "rawdata"), na.rm = TRUE)!=0
   data = slot(obj, "rawdata")[idx_r, ]
-
   if(tolower(type) == "array"){
     requireNamespace("limma")
     slot(obj, "normlized") = normalizeQuantiles(data)
     #"ls" for least squares or "robust" for robust regression
     fit = eBayes(lmFit(slot(obj, "normlized"), design, na.rm=TRUE))
-    res = topTable(fit, adjust.method="BH", coef=ncol(design), number = nrow(slot(obj, "normlized")))
+    res = topTable(fit, adjust.method="BH", coef=ncol(design), number = Inf)
     res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
     colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
   }else if(tolower(type) == "rnaseq"){
     if(tolower(method) == "deseq2"){
       requireNamespace("DESeq2")
-      slot(obj, "normlized") = TransformCount(data, minS = minS, method = "vst")
+      slot(obj, "normlized") = TransformCount(data, method = "vst")
       # DESeq2
       dds = DESeqDataSetFromMatrix(data, colData = slot(obj, "SampleAnn"), design = design)
       dds <- DESeq2::DESeq(dds)
@@ -81,7 +68,7 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
     }else if(tolower(method) == "limma"){
       requireNamespace("limma")
-      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), minS = minS, method = "voom")
+      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "voom")
       # limma:voom
       dge <- DGEList(counts=data)
       dge <- calcNormFactors(dge)
@@ -90,8 +77,19 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       res = topTable(fit, adjust.method="BH", coef=ncol(design), number = nrow(slot(obj, "rawdata")))
       res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
       colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
+    }else if(tolower(method) == "edger"){
+      requireNamespace("edgeR")
+      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "voom")
+      dge <- DGEList(counts=data)
+      dge <- calcNormFactors(dge)
+      dge <- estimateDisp(dge, design, robust=TRUE)
+      fit <- glmFit(dge, design)
+      lrt <- glmLRT(fit)
+      res <- topTags(lrt, n = nrow(slot(obj, "rawdata")))
+      res = res$table[, c("logCPM", "logFC", "logFC", "PValue", "FDR")]
+      colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
     }else if(tolower(method) == "gfold"){
-      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), minS = minS, method = "voom")
+      slot(obj, "normlized") = TransformCount(slot(obj, "rawdata"), method = "voom")
       # GFOLD
       tmp = mapply(function(x){
         write.table(cbind(NA, data[,x], NA, NA),
@@ -109,7 +107,40 @@ DEAnalyze <- function(obj, SampleAnn = NULL, type = "Array", method = "limma",
       tmp = file.remove(paste0(ctrlname, ".txt"), paste0(treatname, ".txt"),
                         "gfold_tmp", "gfold_tmp.ext")
     }else{
-      stop("Method not available !!!")
+      stop("Method not available for RNA-seq data !!!")
+    }
+  }else if(tolower(type) == "msms"){
+    if (tolower(method) == "limma"){
+      requireNamespace("limma")
+      slot(obj, "normlized") = data
+      #"ls" for least squares or "robust" for robust regression
+      fit = eBayes(lmFit(slot(obj, "normlized"), design))
+      res = topTable(fit, adjust.method="BH", coef=ncol(design), number = Inf)
+      res = res[, c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]
+      colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
+    }else if(grepl("^glm\\.", tolower(method))){
+      fd <- data.frame(gene = rownames(exprSet),
+                       row.names = rownames(exprSet),
+                       stringsAsFactors = FALSE)
+      MSnSet_obj <- MSnSet(exprs=slot(obj, "normlized"), fData=fd,
+                           pData=slot(obj, "SampleAnn"))
+      MSnSet_obj <- pp.msms.data(MSnSet_obj)  # pp.msms.data function used to deleted genes which all expression is 0.
+
+      null.f <- "y~1"
+      alt.f <- "y~Condition"
+      div <- colSums(slot(obj, "normlized"), na.rm = TRUE)
+      ### msmsTests method
+      if(tolower(method)=="glm.pois"){
+        res <- msms.glm.pois(MSnSet_obj, alt.f, null.f, div=div)
+      }else if(tolower(method)=="glm.qlll"){
+        res <- msms.glm.qlll(MSnSet_obj, alt.f, null.f, div=div)
+      }else if(tolower(method)=="glm.nb"){
+        res <- msms.edgeR(MSnSet_obj, alt.f, null.f, div=div)
+      }
+      res$baseMean = rowMeans(slot(obj, "normlized"))[rownames(res)]
+      res$padj = p.adjust(res$p.value, method = "BH")
+      res = res[, c(4,1:3,5)]
+      colnames(res) = c("baseMean", "log2FC", "stat", "pvalue", "padj")
     }
   }else{
     stop("Data type error! ")
