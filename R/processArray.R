@@ -17,7 +17,7 @@
 #' @export
 
 processArray <- function(expr="GSE5821_series_matrix.txt",
-                         GPL="GPL96.soft", symbol=NA, org = "hsa"){
+                         GPL="GPL96.soft", symbol=NA, org = "hsa", log2 = FALSE){
   #===Determine the parameters using shell command
   Sample_title = system(paste0("grep -n '!Sample_title' ", expr), intern = TRUE)
   Sample_title = unlist(strsplit(Sample_title, "\t\""))
@@ -71,7 +71,7 @@ processArray <- function(expr="GSE5821_series_matrix.txt",
   #======Normalize the expression data
   if(quantile) expr = limma::normalizeQuantiles(expr)
   expr = as.matrix(expr)
-  if(max(expr, na.rm = TRUE)>50) expr = log2(expr+0.0000001)
+  if(log2) expr = log2(expr+0.0000001)
   expr = as.data.frame(expr, stringAsFactors=FALSE, check.names=FALSE)
   return(expr)
 }
