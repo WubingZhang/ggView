@@ -1,8 +1,12 @@
 .snakemake
-*.DS_Store
-*history
+.DS_Store
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+/*.Rcheck/
 .Rproj.user/
 *_cache/
-test
-archive
+test/*
+archive/*
 
