@@ -1,0 +1,8 @@
+.snakemake
+*.DS_Store
+*history
+.Rproj.user/
+*_cache/
+test
+archive
+
