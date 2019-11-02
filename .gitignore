@@ -1,5 +1,5 @@
 .snakemake
-.DS_Store
+*/.DS_Store
 .Rhistory
 .Rapp.history
 .RData
