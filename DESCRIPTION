@@ -1,13 +1,12 @@
 Package: ggView
 Type: Package
-Title: Useful plot functions
+Title: What the Package Does (Title Case)
 Version: 0.1.0
-Author: Wubing Zhang
-Maintainer: Wubing Zhang <Watson5bZhang@gmail.com>
-Description: Archive of personal plot functions.
-Depends: R (>= 3.5), ggplot2, stats, grDevices, utils
-Imports: dendextend, ggrepel, ggpubr, RColorBrewer, colorspace, data.table
-License: GPL (>=3)
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1

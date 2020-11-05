@@ -4,9 +4,20 @@
 \alias{KMView}
 \title{Survival analysis and plot the kaplan-meier curves}
 \usage{
-KMView(survdata, bio, os = "os", event = "event", cut = c(0, 0.5, 1),
-  optimalCut = TRUE, pval.method = c("cox", "logrank"),
-  pval.pos = c(0.9, 0.95), labels = 1:(length(cut) - 1), ...)
+KMView(
+  survdata,
+  bio,
+  os = "os",
+  event = "event",
+  adjust = c("age", "gender", "race"),
+  interact = NULL,
+  cut = c(0, 0.5, 1),
+  labels = NULL,
+  optimalCut = TRUE,
+  pval.method = c("logrank", "cox"),
+  pval.pos = c(0, 0.2),
+  ...
+)
 }
 \arguments{
 \item{survdata}{A data frame including the clinical information.}
@@ -18,21 +29,22 @@ in the survdata should be used to predict the risk of patients.}
 
 \item{event}{A character or an integer, specifying the variable/column of outcome.}
 
+\item{adjust}{A vector of factors to include in the cox model, default c("age", "gender", "race").}
+
+\item{interact}{A factor that interact with `bio`.}
+
 \item{cut}{A numeric vector for separating the patients into different groups,
 only available when `bio` is a continuous variable.}
 
+\item{labels}{A character vector, specifying the labels for each patient group.}
+
 \item{optimalCut}{Boolean, indicating whether determin the ootimal cutpoint.}
 
-\item{pval.method}{Character, indicating the method for the pvalue calculation,
-only logrank and cox are available now.}
+\item{pval.method}{logrank (default) or cox, indicating the method for the pvalue calculation.}
 
 \item{pval.pos}{Character, indicating the method for the pvalue calculation.}
 
-\item{labels}{A character vector, specifying the labels for each patient group.}
-
-\item{...}{Other available parameters in ggsurvplot.}
-
-\item{event}{A character or an integer, specifying the variable/column of outcome.}
+\item{...}{Other available parameters in ggsurvplot or ggadjustedcurves.}
 }
 \value{
 A ggplot instance that allows further custimization.

@@ -15,16 +15,9 @@
 #' @param horiz Logical indicating if the dendrogram should be drawn horizontally or not.
 #' @param ... Arguments to be passed to methods, such as graphical parameters (see par).
 #'
-#' @return Just plot figure in device.
+#' @return Plot figure on open device.
 #'
 #' @author Wubing Zhang
-#'
-#' @note See the vignette for an example of hclustView
-#' Note that the source code of \code{hclustView} is very simple.
-#' The source can be found by typing \code{MAGeCKFlute:::hclustView}
-#' or \code{getMethod("hclustView")}, or
-#' browsed on github at \url{https://github.com/WubingZhang/MAGeCKFlute/tree/master/R/hclustView.R}
-#' Users should find it easy to customize this function.
 #'
 #' @examples
 #' label_cols = rownames(USArrests)
@@ -37,7 +30,6 @@
 #'
 
 hclustView <- function(d, method="average", label_cols=NULL, bar_cols=NULL, main=NA, xlab=NA, horiz = TRUE, ...){
-  requireNamespace("dendextend")
   hc = hclust(dist(d), method = method)
   if(!is.null(label_cols)) label_cols = getCols(label_cols)
   if(!is.null(bar_cols)){
@@ -55,4 +47,28 @@ hclustView <- function(d, method="average", label_cols=NULL, bar_cols=NULL, main
   if(!is.null(label_cols)) dendextend::labels_colors(dend) <- label_cols[order.dendrogram(dend)]
   plot(dend, main=main, xlab=xlab, horiz = horiz)
   if(!is.null(bar_cols)) dendextend::colored_bars(bar_cols, dend, horiz = horiz)
+}
+
+#' Map values to colors
+#'
+#' @docType methods
+#' @name getCols
+#' @rdname getCols
+#'
+#' @param x A numeric vector.
+#' @param palette diverge, rainbow, sequential
+#'
+#' @return A vector of colors corresponding to input vector.
+#'
+#' @author Wubing Zhang
+#'
+#'
+#' @importFrom scales gradient_n_pal
+#' @importFrom scales brewer_pal
+#' @export
+#'
+getCols <- function(x, palette=1){
+  cols = scales::gradient_n_pal(scales::brewer_pal("qual", palette)(8))(seq(0, 1, length.out = length(unique(x))))
+  names(cols) = unique(x)
+  return(cols[x])
 }

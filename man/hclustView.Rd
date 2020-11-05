@@ -5,8 +5,16 @@
 \alias{hclustView}
 \title{Cluster and view cluster tree}
 \usage{
-hclustView(d, method = "average", label_cols = NULL, bar_cols = NULL,
-  main = NA, xlab = NA, horiz = TRUE, ...)
+hclustView(
+  d,
+  method = "average",
+  label_cols = NULL,
+  bar_cols = NULL,
+  main = NA,
+  xlab = NA,
+  horiz = TRUE,
+  ...
+)
 }
 \arguments{
 \item{d}{A dissimilarity structure as produced by dist.}
@@ -26,18 +34,10 @@ hclustView(d, method = "average", label_cols = NULL, bar_cols = NULL,
 \item{...}{Arguments to be passed to methods, such as graphical parameters (see par).}
 }
 \value{
-Just plot figure in device.
+Plot figure on open device.
 }
 \description{
 Cluster and view cluster tree
-}
-\note{
-See the vignette for an example of hclustView
-Note that the source code of \code{hclustView} is very simple.
-The source can be found by typing \code{MAGeCKFlute:::hclustView}
-or \code{getMethod("hclustView")}, or
-browsed on github at \url{https://github.com/WubingZhang/MAGeCKFlute/tree/master/R/hclustView.R}
-Users should find it easy to customize this function.
 }
 \examples{
 label_cols = rownames(USArrests)
