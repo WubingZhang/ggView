@@ -104,17 +104,15 @@ KMView <- function(survdata, bio, os = "os", event = "event",
   if(pval.method[1]=="logrank"){
     if(any(adjust%in%colnames(tmpDat))){
       warning("Coxph p-value is used because of the adjustment factors in the analysis!!!")
-      break
-    }
-    if("Interaction"%in%colnames(tmpDat)){
+    }else if("Interaction"%in%colnames(tmpDat)){
       warning("Coxph p-value is used because of the interaction term in the analysis!!!")
-      break
+    }else{
+      errflag = FALSE
+      diffSurv <- tryCatch(survdiff(Surv(time=os, event=event) ~ ., data=tmpDat),
+                           error = function(e) errflag <<- TRUE)
+      if(errflag) return(1)
+      pval <- signif(1 - pchisq(diffSurv$chisq, length(diffSurv$n) - 1), digits=3)
     }
-    errflag = FALSE
-    diffSurv <- tryCatch(survdiff(Surv(time=os, event=event) ~ ., data=tmpDat),
-                         error = function(e) errflag <<- TRUE)
-    if(errflag) return(1)
-    pval <- signif(1 - pchisq(diffSurv$chisq, length(diffSurv$n) - 1), digits=3)
   }
 
   ## Plotting the KM-plot
@@ -127,7 +125,9 @@ KMView <- function(survdata, bio, os = "os", event = "event",
     p = p + labs(color = NULL)
     p
   }else{
-    fittedSurv <- survfit(Surv(time=os, event=event) ~ tmpDat[,interestTerm], data=tmpDat)
+    colnames(tmpDat)[colnames(tmpDat)==interestTerm] = "interestTerm"
+    fittedSurv <- survfit(Surv(time=os, event=event) ~ interestTerm,
+                          data=tmpDat[, c("os", "event", "interestTerm")])
     p = ggsurvplot(fittedSurv, data = tmpDat, surv.median.line = "hv",
                    legend.labs = labels, ...)
     p = p$plot + annotate("text", x = quantile(tmpDat$os, pval.pos[1], na.rm = TRUE),

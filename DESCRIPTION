@@ -1,12 +1,29 @@
 Package: ggView
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Practical package for scientific plotting
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Wubing Zhang
+Maintainer: Wubing Zhang <Watson5bZhang@gmail.com>
+Description: It is a basic issue to visualize the data in biological research, however 
+        it is very challenging for many wet lab scientists. Here, we built the ggView 
+        based on ggplot for elegant data visualization in R. The ggView includes multiple
+        easy-to-use and practical functions for plotting figures for publication.
+License: GPL-3
 Encoding: UTF-8
+Depends: R (>= 3.2.0),
+         ggplot2
+Imports: ggrepel,
+         grid,
+         ggsci,
+         ggpubr,
+         scales,
+         dendextend,
+         survminer,
+         survival,
+         ggrepel,
+         ComplexHeatmap
+Suggests: grDevices,
+          knitr,
+          RColorBrewer
 LazyData: true
 RoxygenNote: 7.1.1
