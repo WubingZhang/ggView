@@ -13,6 +13,8 @@
 #' @param size Numeric, specifying size of the box.
 #' @param comparisons A list, customizing the comparisons.
 #' @param test.method Character, specifying the statistical test method.
+#' @param p.label Character, "p.signif" (shows the significance levels), or
+#' "p.format" (shows the formatted p value).
 #' @param add.jitter Boolean, whether add jitter into the plot.
 #' @param jitter.color Character, specifying the column name/color of the points.
 #' @param jitter.size Numeric, specifying size of the jitter.
@@ -38,12 +40,13 @@ BoxView <- function(gg, x, y,
                     size = 1,
                     comparisons = NULL,
                     test.method = "t.test",
+                    p.label = c("p.signif", "p.format")[1],
                     add.jitter = FALSE,
                     jitter.color = color,
                     jitter.size = size,
                     alpha = 0.6,
                     main = NULL,
-                    xlab = x,
+                    xlab = NULL,
                     ylab = y,
                     legend.position = "none",
                     ...){
@@ -79,7 +82,10 @@ BoxView <- function(gg, x, y,
   p = p + geom_boxplot(width = width, size = size, alpha = alpha, ...)
   ## Comparisons
   if(!is.null(comparisons)){
-    p = p + ggpubr::compare_means(method = test.method, p.adjust.method = "fdr")
+    p = p + ggpubr::stat_compare_means(comparisons = comparisons,
+                                       method = test.method,
+                                       hide.ns = TRUE,
+                                       label = p.label)
   }
   if(add.jitter){
     boo <- try(col2rgb(jitter.color), silent=TRUE)

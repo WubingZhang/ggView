@@ -15,12 +15,13 @@ BoxView(
   size = 1,
   comparisons = NULL,
   test.method = "t.test",
+  p.label = c("p.signif", "p.format")[1],
   add.jitter = FALSE,
   jitter.color = color,
   jitter.size = size,
   alpha = 0.6,
   main = NULL,
-  xlab = x,
+  xlab = NULL,
   ylab = y,
   legend.position = "none",
   ...
@@ -44,6 +45,9 @@ BoxView(
 \item{comparisons}{A list, customizing the comparisons.}
 
 \item{test.method}{Character, specifying the statistical test method.}
+
+\item{p.label}{Character, "p.signif" (shows the significance levels), or
+"p.format" (shows the formatted p value).}
 
 \item{add.jitter}{Boolean, whether add jitter into the plot.}
 
