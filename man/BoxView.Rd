@@ -9,17 +9,23 @@ BoxView(
   gg,
   x,
   y,
-  color = NA,
+  color = "black",
   fill = NA,
-  width = 0.6,
+  width = 0.5,
   size = 1,
   comparisons = NULL,
   test.method = "t.test",
   p.label = c("p.signif", "p.format")[1],
   add.jitter = FALSE,
-  jitter.color = color,
+  jitter.color = "black",
   jitter.size = size,
-  alpha = 0.6,
+  jitter.shape = 16,
+  jitter.width = 0.2,
+  label = NULL,
+  toplabels = c(),
+  label.size = 5,
+  label.force = 3,
+  alpha = 1,
   main = NULL,
   xlab = NULL,
   ylab = y,
@@ -55,7 +61,19 @@ BoxView(
 
 \item{jitter.size}{Numeric, specifying size of the jitter.}
 
-\item{alpha}{A numeric, specifying the transparency of the dots.}
+\item{jitter.shape}{Numeric, specifying the shape of the dots.}
+
+\item{jitter.width}{Numeric, specifying the width of the jitter region.}
+
+\item{label}{Character, specifying the column name for dot label.}
+
+\item{toplabels}{Character, specifying the column name/color of the points.}
+
+\item{label.size}{Numeric, specifying size of the labels.}
+
+\item{label.force}{Numeric, force of repulsion between overlapping text labels. Defaults to 3.}
+
+\item{alpha}{A numeric, specifying the transparency of the boxes.}
 
 \item{main}{Title of the figure.}
 
