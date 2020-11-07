@@ -16,6 +16,12 @@
 #' @param add.jitter Boolean, whether add jitter into the plot.
 #' @param jitter.color Character, specifying the column name/color of the points.
 #' @param jitter.size Numeric, specifying size of the jitter.
+#' @param alpha A numeric, specifying the transparency of the dots.
+#' @param main Title of the figure.
+#' @param xlab Title of x-axis
+#' @param ylab Title of y-axis.
+#' @param legend.position Position of legend, "none", "right", "top", "bottom", or
+#' a two-length vector indicating the position.
 #' @param ... Other parameters in geom_boxplot.
 #'
 #' @return An object created by \code{ggplot}, which can be assigned
@@ -35,6 +41,11 @@ BoxView <- function(gg, x, y,
                     add.jitter = FALSE,
                     jitter.color = color,
                     jitter.size = size,
+                    alpha = 0.6,
+                    main = NULL,
+                    xlab = x,
+                    ylab = y,
+                    legend.position = "none",
                     ...){
   gg = as.data.frame(gg)
   p = ggplot(gg, aes_string(x, y))
@@ -46,27 +57,30 @@ BoxView <- function(gg, x, y,
   if(color %in% colnames(gg)){ ## Customize colors in the data
     if(fill %in% colnames(gg))
       p = p + geom_boxplot(aes_string(color = color, fill = fill),
-                           width = width, size = size, ...)
+                           width = width, size = size, alpha = alpha, ...)
     else if(!boo2)
       p = p + geom_boxplot(aes_string(color = color), fill = fill,
-                           width = width, size = size, ...)
+                           width = width, size = size, alpha = alpha, ...)
     else
-      p = p + geom_boxplot(aes_string(color = color), width = width, size = size, ...)
+      p = p + geom_boxplot(aes_string(color = color), width = width,
+                           size = size, alpha = alpha, ...)
   }else if(!boo1){ ## Customize single color
     if(fill %in% colnames(gg))
       p = p + geom_boxplot(aes_string(fill = fill), color = color,
-                           width = width, size = size, ...)
+                           width = width, size = size, alpha = alpha, ...)
     else if(!boo2)
-      p = p + geom_boxplot(color = color, fill = fill, width = width, size = size, ...)
+      p = p + geom_boxplot(color = color, fill = fill, width = width,
+                           size = size, alpha = alpha, ...)
     else
-      p = p + geom_boxplot(color = color, width = width, size = size, ...)
+      p = p + geom_boxplot(color = color, width = width, size = size, alpha = alpha, ...)
   }else{ ## Use default color
     if(fill %in% colnames(gg))
-      p = p + geom_boxplot(aes_string(fill = fill), width = width, size = size, ...)
+      p = p + geom_boxplot(aes_string(fill = fill), width = width,
+                           size = size, alpha = alpha, ...)
     else if(!boo2)
-      p = p + geom_boxplot(fill = fill, width = width, size = size, ...)
+      p = p + geom_boxplot(fill = fill, width = width, size = size, alpha = alpha, ...)
     else
-      p = p + geom_boxplot(width = width, size = size, ...)
+      p = p + geom_boxplot(width = width, size = size, alpha = alpha, ...)
   }
   ## Comparisons
   if(!is.null(comparisons)){
@@ -82,6 +96,9 @@ BoxView <- function(gg, x, y,
     else
       p = p + geom_jitter(size = jitter.size)
   }
+  p = p + labs(x = xlab, y = ylab, title = main)
   p = p + theme_bw(base_size = 12)
+  p = p + theme(plot.title = element_text(hjust = 0.5),
+                legend.position = legend.position)
   return(p)
 }

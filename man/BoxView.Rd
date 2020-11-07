@@ -18,6 +18,11 @@ BoxView(
   add.jitter = FALSE,
   jitter.color = color,
   jitter.size = size,
+  alpha = 0.6,
+  main = NULL,
+  xlab = x,
+  ylab = y,
+  legend.position = "none",
   ...
 )
 }
@@ -45,6 +50,17 @@ BoxView(
 \item{jitter.color}{Character, specifying the column name/color of the points.}
 
 \item{jitter.size}{Numeric, specifying size of the jitter.}
+
+\item{alpha}{A numeric, specifying the transparency of the dots.}
+
+\item{main}{Title of the figure.}
+
+\item{xlab}{Title of x-axis}
+
+\item{ylab}{Title of y-axis.}
+
+\item{legend.position}{Position of legend, "none", "right", "top", "bottom", or
+a two-length vector indicating the position.}
 
 \item{...}{Other parameters in geom_boxplot.}
 }
