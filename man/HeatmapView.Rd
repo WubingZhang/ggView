@@ -7,40 +7,140 @@
 \usage{
 HeatmapView(
   mat,
-  limit = c(-2, 2),
-  colPal = rev(colorRampPalette(c("#c12603", "white", "#0073B6"), space = "Lab")(199)),
-  filename = NA,
-  width = NA,
-  height = NA,
+  breaks = c(-2, 0, 2),
+  colors = c("blue", "#EEEEEE", "red"),
+  na_col = "grey",
+  cluster_rows = FALSE,
+  row_dend_side = c("left", "right"),
+  cluster_cols = FALSE,
+  column_dend_side = c("top", "bottom"),
+  show_row_names = TRUE,
+  row_names_side = "left",
+  row_names_gp = gpar(fontsize = 12),
+  row_names_rot = 0,
+  show_column_names = TRUE,
+  column_names_side = "bottom",
+  column_names_gp = gpar(fontsize = 12),
+  column_names_rot = 90,
+  top_ann = NULL,
+  top_ann_col = NULL,
+  bott_ann = NULL,
+  bott_ann_col = NULL,
+  left_ann = NULL,
+  left_ann_col = NULL,
+  right_ann = NULL,
+  right_ann_col = NULL,
+  show_ann_name = FALSE,
+  show_legend = TRUE,
+  row_split = NULL,
+  column_split = NULL,
+  show_heatmap_legend = TRUE,
+  legend_title = NULL,
+  legend_title_position = "lefttop",
+  legend_direction = "vertical",
+  legend_title_gp = gpar(fontsize = 12),
+  legend_labels_gp = gpar(fontsize = 12),
+  legend_height = 2,
+  legend_width = 0.3,
+  legend_side = "right",
   ...
 )
 }
 \arguments{
-\item{mat}{Matrix like object, each row is gene and each column is sample.}
+\item{mat}{Matrix like object}
 
-\item{limit}{Max value in heatmap}
+\item{breaks}{A vector indicating numeric breaks}
 
-\item{colPal}{colorRampPalette.}
+\item{colors}{A vector of colors which correspond to values in breaks}
 
-\item{filename}{File path where to save the picture.}
+\item{na_col}{Color for NA values.}
 
-\item{width}{Manual option for determining the output file width in inches.}
+\item{cluster_rows}{Same as that in ComplexHeatmap::Heatmap.}
 
-\item{height}{Manual option for determining the output file height in inches.}
+\item{row_dend_side}{Same as that in ComplexHeatmap::Heatmap.}
 
-\item{...}{Other parameters in pheatmap.}
+\item{cluster_cols}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{column_dend_side}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{show_row_names}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{row_names_side}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{row_names_gp}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{row_names_rot}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{show_column_names}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{column_names_side}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{column_names_gp}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{column_names_rot}{Same as that in ComplexHeatmap::Heatmap.}
+
+\item{top_ann}{A data frame. Each column will be treated as a simple annotation.
+The data frame must have column names.}
+
+\item{top_ann_col}{A list of colors which contain color mapping to df.}
+
+\item{bott_ann}{Same as top_ann.}
+
+\item{bott_ann_col}{A list of colors which contain color mapping to df.}
+
+\item{left_ann}{Same as top_ann.}
+
+\item{left_ann_col}{A list of colors which contain color mapping to df.}
+
+\item{right_ann}{Same as top_ann.}
+
+\item{right_ann_col}{A list of colors which contain color mapping to df.}
+
+\item{show_ann_name}{Whether show annotation names.}
+
+\item{show_legend}{Whether show annotation legends.}
+
+\item{row_split}{A vector or a data frame by which the rows are split.
+But if cluster_rows is a clustering object, split can be a single number
+indicating to split the dendrogram by cutree.}
+
+\item{column_split}{Same as row_split.}
+
+\item{show_heatmap_legend}{Whether show legends.}
+
+\item{legend_title}{Character specifyin the legend title.}
+
+\item{legend_title_position}{Position of title relative to the legend.
+topleft, topcenter, leftcenter-rot and lefttop-rot are only for vertical legend and
+leftcenter, lefttop are only for horizontal legend.}
+
+\item{legend_direction}{Vertical or horizontal?}
+
+\item{legend_title_gp}{Graphic parameters of the title.}
+
+\item{legend_labels_gp}{Graphic parameters for labels.}
+
+\item{legend_height}{Height of the whole legend body. It is only used for vertical continous legend.}
+
+\item{legend_width}{Width of the whole legend body. It is only used for horizontal continous legend.}
+
+\item{legend_side}{Side to put heatmap legend}
+
+\item{...}{Other parameters in draw.}
 }
 \value{
-Invisibly a pheatmap object that is a list with components.
+No return.
 }
 \description{
 Draw heatmap
 }
 \examples{
-data(mle.gene_summary)
-dd = ReadBeta(mle.gene_summary)
-gg = cor(dd[,2:ncol(dd)])
-HeatmapView(gg, display_numbers = TRUE)
+dat = matrix(rnorm(100), 10)
+rownames(dat) = letters[1:10]
+colnames(dat) = letters[11:20]
+rowann = data.frame(Group = rep(letters[1:2], each=5), index = 1:10)
+colann = data.frame(Group = rep(letters[1:2], each=5), index = 11:20)
+HeatmapView(dat, left_ann = rowann, top_ann = colann)
 
 }
 \author{

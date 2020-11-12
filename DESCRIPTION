@@ -12,16 +12,16 @@ License: GPL-3
 Encoding: UTF-8
 Depends: R (>= 3.2.0),
          ggplot2
-Imports: ggrepel,
+Imports: circlize,
+         ComplexHeatmap,
+         dendextend,
+         ggrepel,
          grid,
          ggsci,
          ggpubr,
          scales,
-         dendextend,
          survminer,
-         survival,
-         ggrepel,
-         ComplexHeatmap
+         survival
 Suggests: grDevices,
           knitr,
           RColorBrewer
