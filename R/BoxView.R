@@ -67,6 +67,8 @@ BoxView <- function(gg, x, y,
                     legend.position = "none",
                     ...){
   gg = as.data.frame(gg)
+  p = ggplot(gg, aes_string(x, y))
+
   ## Check if color is valid color
   boo <- try(col2rgb(color), silent=TRUE)
   boo1 = "try-error" %in% class(boo)
@@ -74,19 +76,41 @@ BoxView <- function(gg, x, y,
   boo2 = "try-error" %in% class(boo)
   if(is.na(fill)) boo2 = TRUE
 
-  if(color%in%colnames(gg) | !boo1){ ## Customize colors in the data
-    if(fill%in%colnames(gg) | !boo2)
-      p = ggplot(gg, aes(gg[,x], gg[,y], color = color, fill = fill))
+  if(color%in%colnames(gg)){ ## Customize colors in the data
+    if(fill%in%colnames(gg))
+      p = p + geom_boxplot(aes_string(color = color, fill = fill),
+                           width = width, size = size, alpha = alpha,
+                           outlier.shape = NA, ...)
+    else if(!boo2)
+      p = p + geom_boxplot(aes_string(color = color), fill = fill,
+                           width = width, size = size, alpha = alpha,
+                           outlier.shape = NA, ...)
     else
-      p = ggplot(gg, aes(gg[,x], gg[,y], color = color))
+      p = p + geom_boxplot(aes_string(color = color),
+                           width = width, size = size, alpha = alpha,
+                           outlier.shape = NA, ...)
+  }else if(!boo1){
+    if(fill%in%colnames(gg))
+      p = p + geom_boxplot(aes_string(fill = fill), color = color,
+                           width = width, size = size, alpha = alpha,
+                           outlier.shape = NA, ...)
+    else if(!boo2)
+      p = p + geom_boxplot(color = color, fill = fill,
+                           width = width, size = size, alpha = alpha,
+                           outlier.shape = NA, ...)
+    else
+      p = p + geom_boxplot(color = color, width = width, size = size,
+                           alpha = alpha, outlier.shape = NA, ...)
   }else{
-    if(fill%in%colnames(gg) | !boo2)
-      p = ggplot(gg, aes(gg[,x], gg[,y], fill = fill))
+    if(fill%in%colnames(gg))
+      p = p + geom_boxplot(aes_string(fill = fill), width = width, size = size,
+                           alpha = alpha, outlier.shape = NA, ...)
+    else if(!boo2)
+      p = p + geom_boxplot(fill = fill, width = width, size = size, alpha = alpha,
+                           outlier.shape = NA, ...)
     else
-      p = ggplot(gg, aes(gg[,x], gg[,y]))
+      p = p + geom_boxplot(width = width, size = size, alpha = alpha, outlier.shape = NA, ...)
   }
-  p = p + geom_boxplot(width = width, size = size, alpha = alpha, ...)
-  p = p + labs(x = x, y = y)
   ## Comparisons
   if(!is.null(comparisons)){
     p = p + ggpubr::stat_compare_means(comparisons = comparisons,
