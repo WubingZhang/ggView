@@ -17,7 +17,7 @@ BoxView(
   test.method = "t.test",
   p.label = c("p.signif", "p.format")[1],
   add.jitter = FALSE,
-  jitter.color = "black",
+  jitter.color = color,
   jitter.size = size,
   jitter.shape = 16,
   jitter.width = 0.2,
@@ -27,7 +27,7 @@ BoxView(
   label.force = 3,
   alpha = 1,
   main = NULL,
-  xlab = NULL,
+  xlab = x,
   ylab = y,
   legend.position = "none",
   ...

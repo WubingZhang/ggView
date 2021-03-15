@@ -52,7 +52,7 @@ BoxView <- function(gg, x, y,
                     test.method = "t.test",
                     p.label = c("p.signif", "p.format")[1],
                     add.jitter = FALSE,
-                    jitter.color = "black",
+                    jitter.color = color,
                     jitter.size = size,
                     jitter.shape = 16,
                     jitter.width = 0.2,
@@ -62,7 +62,7 @@ BoxView <- function(gg, x, y,
                     label.force = 3,
                     alpha = 1,
                     main = NULL,
-                    xlab = NULL,
+                    xlab = x,
                     ylab = y,
                     legend.position = "none",
                     ...){
@@ -74,30 +74,19 @@ BoxView <- function(gg, x, y,
   boo2 = "try-error" %in% class(boo)
   if(is.na(fill)) boo2 = TRUE
 
-  if(color %in% colnames(gg)){ ## Customize colors in the data
-    if(fill %in% colnames(gg))
-      p = ggplot(gg, aes_string(x, y, color = color, fill = fill))
-    else if(!boo2)
-      p = ggplot(gg, aes_string(x, y, color = color), fill = fill)
+  if(color%in%colnames(gg) | !boo1){ ## Customize colors in the data
+    if(fill%in%colnames(gg) | !boo2)
+      p = ggplot(gg, aes(gg[,x], gg[,y], color = color, fill = fill))
     else
-      p = ggplot(gg, aes_string(x, y, color = color))
-  }else if(!boo1){ ## Customize single color
-    if(fill %in% colnames(gg))
-      p = ggplot(gg, aes_string(x, y, fill = fill), color = color)
-    else if(!boo2)
-      p = ggplot(gg, aes_string(x, y), fill = fill, color = color)
+      p = ggplot(gg, aes(gg[,x], gg[,y], color = color))
+  }else{
+    if(fill%in%colnames(gg) | !boo2)
+      p = ggplot(gg, aes(gg[,x], gg[,y], fill = fill))
     else
-      p = ggplot(gg, aes_string(x, y), color = color)
-  }else{ ## Use default color
-    if(fill %in% colnames(gg))
-      p = ggplot(gg, aes_string(x, y, fill = fill))
-    else if(!boo2)
-      p = ggplot(gg, aes_string(x, y), fill = fill)
-    else
-      p = ggplot(gg, aes_string(x, y))
+      p = ggplot(gg, aes(gg[,x], gg[,y]))
   }
   p = p + geom_boxplot(width = width, size = size, alpha = alpha, ...)
-
+  p = p + labs(x = x, y = y)
   ## Comparisons
   if(!is.null(comparisons)){
     p = p + ggpubr::stat_compare_means(comparisons = comparisons,
