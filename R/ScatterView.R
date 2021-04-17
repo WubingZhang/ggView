@@ -328,7 +328,7 @@ ScatterView<-function(data,
       p = p + geom_abline(slope=slope, intercept=intercept, linetype = "dotted")
   }
   p = p + labs(x=xlab, y = ylab, title = main, color = NULL)
-  p = p + theme_bw(base_size = 12)
+  p = p + theme_bw(base_size = 14)
   p = p + theme(legend.position = legend.position)
 
   return(p)

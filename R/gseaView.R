@@ -36,7 +36,7 @@ gseaView <- function(x, geneSetID, title = "", seg_height = 0.08,
   p <- p + labs(x = NULL, y = "Running Enrichment Score", title = title)
   p <- p + scale_y_continuous(breaks = seq(round(min(gsdata$runningScore),1), round(max(gsdata$runningScore),1), by = 0.2),
                               expand=c(0,0))
-  p <- p + theme_classic(base_size)
+  p <- p + theme_classic(base_size = 14)
   p <- p + theme(legend.title = element_blank(),
           legend.background = element_rect(fill = "transparent"))
   p <- p + theme(plot.margin=margin(t=.2, r = .2, b=0, l=.2, unit="cm"))

@@ -33,7 +33,7 @@ PieGridView <- function(dat, y = "Freq", fill = "Note",
   }
   p = ggplot(dat, aes_string(x="x", y=y, fill=fill))
   p = p + geom_bar(stat="identity", width=1)
-  p = p + theme_void()
+  p = p + theme_void(base_size = 14)
   p = p + facet_grid(rows~cols, switch="both", labeller = labeller(rows = row.label, cols = col.label))
   p = p + coord_polar("y", start=0)
   p = p + theme(strip.text.y.left = element_text(angle = 0, hjust = 1, vjust = 0.5),

@@ -39,7 +39,7 @@ ViolinGridView <- function(dat, x, y, fill, rows, cols, label, label.y,
   p = p + facet_grid(rows~cols, switch="both", scales = "free",
                      labeller = labeller(rows = row.label, cols = col.label))
   p = p + labs(x = NULL, y = NULL, color = NULL, fill = NULL)
-  p = p + theme_bw()
+  p = p + theme_bw(base_size = 14)
   p = p + theme(axis.text = element_blank(), axis.ticks = element_blank())
   p = p + theme(panel.grid = element_blank())
   p = p + theme(strip.text.y.left = element_text(angle = 0, hjust = 1, vjust = 0.5),
