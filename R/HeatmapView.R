@@ -23,17 +23,21 @@
 #' @param column_names_gp Same as that in ComplexHeatmap::Heatmap.
 #' @param column_names_rot Same as that in ComplexHeatmap::Heatmap.
 #'
+#' @param show_legend Whether show annotation legends.
 #' @param top_ann A data frame. Each column will be treated as a simple annotation.
 #' The data frame must have column names. Can also be a HeatmapAnnotation-class object.
 #' @param top_ann_col A list of colors which contain color mapping to df.
+#' @param show_top_legend Whether show annotation legends.
 #' @param bott_ann Same as top_ann.
 #' @param bott_ann_col A list of colors which contain color mapping to df.
+#' @param show_bott_legend Whether show annotation legends.
 #' @param left_ann Same as top_ann.
 #' @param left_ann_col A list of colors which contain color mapping to df.
+#' @param show_left_legend Whether show annotation legends.
 #' @param right_ann Same as top_ann.
 #' @param right_ann_col A list of colors which contain color mapping to df.
+#' @param show_right_legend Whether show annotation legends.
 #' @param show_ann_name Whether show annotation names.
-#' @param show_legend Whether show annotation legends.
 #'
 #' @param row_split A vector or a data frame by which the rows are split.
 #' But if cluster_rows is a clustering object, split can be a single number
@@ -85,16 +89,20 @@ HeatmapView <- function(mat,
                         column_names_gp = gpar(fontsize = 12),
                         column_names_rot = 90,
 
+                        show_legend = TRUE,
                         top_ann = NULL,
                         top_ann_col = NULL,
+                        show_top_legend = show_legend,
                         bott_ann = NULL,
                         bott_ann_col = NULL,
+                        show_bott_legend = show_legend,
                         left_ann = NULL,
                         left_ann_col = NULL,
+                        show_left_legend = show_legend,
                         right_ann = NULL,
                         right_ann_col = NULL,
+                        show_right_legend = show_legend,
                         show_ann_name = FALSE,
-                        show_legend = TRUE,
 
                         row_split = NULL,
                         column_split = NULL,
@@ -116,41 +124,41 @@ HeatmapView <- function(mat,
   if(!(is.null(top_ann)|class(top_ann)=="HeatmapAnnotation")){
     if(is.null(top_ann_col))
       top_ann = ComplexHeatmap::columnAnnotation(df = top_ann,
-                                 show_legend = show_legend,
+                                 show_legend = show_top_legend,
                                  show_annotation_name = show_ann_name)
     else
       top_ann = ComplexHeatmap::columnAnnotation(df = top_ann, col = top_ann_col,
-                                                 show_legend = show_legend,
+                                                 show_legend = show_top_legend,
                                                  show_annotation_name = show_ann_name)
   }
   if(!(is.null(bott_ann)|class(bott_ann)=="HeatmapAnnotation")){
     if(is.null(bott_ann_col))
       bott_ann = ComplexHeatmap::columnAnnotation(df = bott_ann,
-                                                  show_legend = show_legend,
+                                                  show_legend = show_bott_legend,
                                                   show_annotation_name = show_ann_name)
     else
       bott_ann = ComplexHeatmap::columnAnnotation(df = bott_ann, col = bott_ann_col,
-                                                  show_legend = show_legend,
+                                                  show_legend = show_bott_legend,
                                                   show_annotation_name = show_ann_name)
   }
   if(!(is.null(left_ann)|class(left_ann)=="HeatmapAnnotation")){
     if(is.null(left_ann_col))
       left_ann = ComplexHeatmap::rowAnnotation(df = left_ann,
-                                               show_legend = show_legend,
+                                               show_legend = show_left_legend,
                                                show_annotation_name = show_ann_name)
     else
       left_ann = ComplexHeatmap::rowAnnotation(df = left_ann, col = left_ann_col,
-                                               show_legend = show_legend,
+                                               show_legend = show_left_legend,
                                                show_annotation_name = show_ann_name)
   }
   if(!(is.null(right_ann)|class(right_ann)=="HeatmapAnnotation")){
     if(is.null(right_ann_col))
       right_ann = ComplexHeatmap::rowAnnotation(df = right_ann,
-                                                show_legend = show_legend,
+                                                show_legend = show_right_legend,
                                                 show_annotation_name = show_ann_name)
     else
       right_ann = ComplexHeatmap::rowAnnotation(df = right_ann, col = right_ann_col,
-                                                show_legend = show_legend,
+                                                show_legend = show_right_legend,
                                                 show_annotation_name = show_ann_name)
   }
 
