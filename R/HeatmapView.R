@@ -24,7 +24,7 @@
 #' @param column_names_rot Same as that in ComplexHeatmap::Heatmap.
 #'
 #' @param top_ann A data frame. Each column will be treated as a simple annotation.
-#' The data frame must have column names.
+#' The data frame must have column names. Can also be a HeatmapAnnotation-class object.
 #' @param top_ann_col A list of colors which contain color mapping to df.
 #' @param bott_ann Same as top_ann.
 #' @param bott_ann_col A list of colors which contain color mapping to df.
@@ -113,7 +113,7 @@ HeatmapView <- function(mat,
   mat[mat<min(breaks)] = min(breaks)
   colPal = circlize::colorRamp2(breaks, colors)
 
-  if(!is.null(top_ann)){
+  if(!(is.null(top_ann)|class(top_ann)=="HeatmapAnnotation")){
     if(is.null(top_ann_col))
       top_ann = ComplexHeatmap::columnAnnotation(df = top_ann,
                                  show_legend = show_legend,
@@ -123,7 +123,7 @@ HeatmapView <- function(mat,
                                                  show_legend = show_legend,
                                                  show_annotation_name = show_ann_name)
   }
-  if(!is.null(bott_ann)){
+  if(!(is.null(bott_ann)|class(bott_ann)=="HeatmapAnnotation")){
     if(is.null(bott_ann_col))
       bott_ann = ComplexHeatmap::columnAnnotation(df = bott_ann,
                                                   show_legend = show_legend,
@@ -133,7 +133,7 @@ HeatmapView <- function(mat,
                                                   show_legend = show_legend,
                                                   show_annotation_name = show_ann_name)
   }
-  if(!is.null(left_ann)){
+  if(!(is.null(left_ann)|class(left_ann)=="HeatmapAnnotation")){
     if(is.null(left_ann_col))
       left_ann = ComplexHeatmap::rowAnnotation(df = left_ann,
                                                show_legend = show_legend,
@@ -143,7 +143,7 @@ HeatmapView <- function(mat,
                                                show_legend = show_legend,
                                                show_annotation_name = show_ann_name)
   }
-  if(!is.null(right_ann)){
+  if(!(is.null(right_ann)|class(right_ann)=="HeatmapAnnotation")){
     if(is.null(right_ann_col))
       right_ann = ComplexHeatmap::rowAnnotation(df = right_ann,
                                                 show_legend = show_legend,
