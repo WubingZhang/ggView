@@ -22,16 +22,20 @@ HeatmapView(
   column_names_side = "bottom",
   column_names_gp = gpar(fontsize = 12),
   column_names_rot = 90,
+  show_legend = TRUE,
   top_ann = NULL,
   top_ann_col = NULL,
+  show_top_legend = show_legend,
   bott_ann = NULL,
   bott_ann_col = NULL,
+  show_bott_legend = show_legend,
   left_ann = NULL,
   left_ann_col = NULL,
+  show_left_legend = show_legend,
   right_ann = NULL,
   right_ann_col = NULL,
+  show_right_legend = show_legend,
   show_ann_name = FALSE,
-  show_legend = TRUE,
   row_split = NULL,
   column_split = NULL,
   show_heatmap_legend = TRUE,
@@ -79,26 +83,34 @@ HeatmapView(
 
 \item{column_names_rot}{Same as that in ComplexHeatmap::Heatmap.}
 
+\item{show_legend}{Whether show annotation legends.}
+
 \item{top_ann}{A data frame. Each column will be treated as a simple annotation.
-The data frame must have column names.}
+The data frame must have column names. Can also be a HeatmapAnnotation-class object.}
 
 \item{top_ann_col}{A list of colors which contain color mapping to df.}
+
+\item{show_top_legend}{Whether show annotation legends.}
 
 \item{bott_ann}{Same as top_ann.}
 
 \item{bott_ann_col}{A list of colors which contain color mapping to df.}
 
+\item{show_bott_legend}{Whether show annotation legends.}
+
 \item{left_ann}{Same as top_ann.}
 
 \item{left_ann_col}{A list of colors which contain color mapping to df.}
+
+\item{show_left_legend}{Whether show annotation legends.}
 
 \item{right_ann}{Same as top_ann.}
 
 \item{right_ann_col}{A list of colors which contain color mapping to df.}
 
-\item{show_ann_name}{Whether show annotation names.}
+\item{show_right_legend}{Whether show annotation legends.}
 
-\item{show_legend}{Whether show annotation legends.}
+\item{show_ann_name}{Whether show annotation names.}
 
 \item{row_split}{A vector or a data frame by which the rows are split.
 But if cluster_rows is a clustering object, split can be a single number
