@@ -116,7 +116,6 @@ BoxView <- function(gg, x, y,
   if(!is.null(comparisons)){
     p = p + ggpubr::stat_compare_means(comparisons = comparisons,
                                        method = test.method,
-                                       hide.ns = TRUE,
                                        label = p.label)
   }
 
