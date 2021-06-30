@@ -49,13 +49,14 @@ BoxView <- function(gg, x, y,
                     width = 0.5,
                     size = 1,
                     comparisons = NULL,
-                    test.method = "t.test",
+                    test.method = "wilcox.test",
                     p.label = c("p.signif", "p.format")[1],
                     add.jitter = FALSE,
                     jitter.color = color,
                     jitter.size = size,
                     jitter.shape = 16,
                     jitter.width = 0.2,
+                    jitter.height = 0,
                     label = NULL,
                     toplabels = c(),
                     label.size = 5,
@@ -125,14 +126,14 @@ BoxView <- function(gg, x, y,
     boo3 = "try-error" %in% class(boo)
     if(jitter.color %in% colnames(gg))
       p = p + geom_jitter(aes_string(color = jitter.color),
-                          position=position_jitter(jitter.width),
+                          width = jitter.width, height = jitter.height,
                           shape=jitter.shape, size = jitter.size)
     else if(!boo3)
       p = p + geom_jitter(color = jitter.color,
-                          position=position_jitter(jitter.width),
+                          width = jitter.width, height = jitter.height,
                           shape=jitter.shape, size = jitter.size)
     else
-      p = p + geom_jitter(position=position_jitter(jitter.width),
+      p = p + geom_jitter(width = jitter.width, height = jitter.height,
                           shape=jitter.shape, size = jitter.size)
   }
   if(!is.null(label) && label%in%colnames(gg)){

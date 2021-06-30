@@ -9,6 +9,7 @@
 #' @param df A data frame.
 #' @param x A character, specifying the x-axis.
 #' @param y A character, specifying the x-axis.
+#' @param color A character, specifying the outline color.
 #' @param fill A character, specifying the fill color.
 #' @param bar.width A numeric, specifying the width of bar.
 #' @param position "dodge" (default), "stack", "fill".
@@ -29,7 +30,7 @@
 #' @import ggplot2 ggpubr
 #' @export
 
-BarView <- function(df, x = "x", y = "y", fill = "#FC6665",
+BarView <- function(df, x = "x", y = "y", fill = "#FC6665", color = fill,
                     bar.width = 0.8, position = "dodge",
                     dodge.width = 0.8, main = NA,
                     xlab = NULL, ylab = NA, ...){
@@ -38,12 +39,16 @@ BarView <- function(df, x = "x", y = "y", fill = "#FC6665",
   ## Check if fill is valid color
   boo <- try(col2rgb(fill), silent=TRUE)
   boo = "try-error" %in% class(boo)
+  boo2 <- try(col2rgb(color), silent=TRUE)
+  boo2 = "try-error" %in% class(boo2)
 
   ## Use the order of x in the df
   df[,x] = factor(df[,x], levels = unique(df[,x]))
 
   if(boo){
     p <- ggplot(df, aes_string(x, y, fill=fill))
+    if(boo2) p <- ggplot(df, aes_string(x, y, fill=fill, color = color))
+    else p <- ggplot(df, aes_string(x, y, fill=fill), color = color)
     if(position=="dodge"){
       p <- p + geom_bar(width = bar.width, stat="identity",
                         position=position_dodge(width = dodge.width,
@@ -53,7 +58,15 @@ BarView <- function(df, x = "x", y = "y", fill = "#FC6665",
     }
   }else{
     p <- ggplot(df, aes_string(x, y))
-    p = p + geom_bar(fill=fill, stat="identity", position=position, ...)
+    if(boo2) p <- ggplot(df, aes_string(x, y, color = color), fill=fill)
+    else p <- ggplot(df, aes_string(x, y), fill=fill, color = color)
+    if(position=="dodge"){
+      p <- p + geom_bar(width = bar.width, stat="identity",
+                        position=position_dodge(width = dodge.width,
+                                                preserve = "single"), ...)
+    }else{
+      p <- p + geom_bar(width = bar.width, stat="identity", position=position, ...)
+    }
   }
   p = p + scale_y_continuous(expand = c(0,0))
   p = p + labs(fill = NULL)

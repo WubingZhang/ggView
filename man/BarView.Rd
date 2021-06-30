@@ -10,6 +10,7 @@ BarView(
   x = "x",
   y = "y",
   fill = "#FC6665",
+  color = fill,
   bar.width = 0.8,
   position = "dodge",
   dodge.width = 0.8,
@@ -27,6 +28,8 @@ BarView(
 \item{y}{A character, specifying the x-axis.}
 
 \item{fill}{A character, specifying the fill color.}
+
+\item{color}{A character, specifying the outline color.}
 
 \item{bar.width}{A numeric, specifying the width of bar.}
 
