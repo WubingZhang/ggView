@@ -72,6 +72,8 @@ KMView <- function(survdata, bio, os = "os", event = "event",
         tmp <- surv_cutpoint(tmpDat, time = "os", event="event", variables = interestTerm)
         breaks = c(min(tmpDat[,interestTerm]), tmp$cutpoint$cutpoint, max(tmpDat[,interestTerm]))
       }
+    }else{
+      breaks = quantile(tmpDat[,interestTerm], cut)
     }
     ## Generate labels automatically
     if(is.null(labels)) labels = paste0("level", 1:(length(breaks)-1))
