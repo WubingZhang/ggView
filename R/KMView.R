@@ -136,7 +136,7 @@ KMView <- function(survdata, bio, os = "os", event = "event",
     p = ggadjustedcurves(newcox, variable = interestTerm, data = tmpDat,
                          legend.labs = labels, ...)
     p = p + annotate("text", x = quantile(tmpDat$os, pval.pos[1], na.rm = TRUE), y = pval.pos[2], 
-                     label = paste("P = ", pval, "\nHR = ", 
+                     label = paste0("P = ", pval, "\nHR = ", 
                                    hr, " [", hr.low, ", ", hr.high, "]"), hjust=0, vjust=1)
     p = p + labs(color = NULL)
     p
@@ -147,7 +147,7 @@ KMView <- function(survdata, bio, os = "os", event = "event",
     p = ggsurvplot(fittedSurv, data = tmpDat, surv.median.line = "hv",
                    legend.labs = labels, ...)
     p = p$plot + annotate("text", x = quantile(tmpDat$os, pval.pos[1], na.rm = TRUE), y = pval.pos[2], 
-                          label = paste("P = ", pval, "\nHR = ", 
+                          label = paste0("P = ", pval, "\nHR = ", 
                                         hr, " [", hr.low, ", ", hr.high, "]"), hjust=0, vjust=1)
     p = p + labs(color = NULL)
     p
