@@ -24,7 +24,7 @@ KMView <- function(survdata, bio, os = "os", event = "event",
                    adjust = c("age", "gender", "race"), interact = NULL,
                    cut = c(0, 0.5, 1), labels = NULL,
                    optimalCut = TRUE,
-                   pval.method = c("logrank", "cox"),
+                   pval.method = c("cox", "logrank"),
                    pval.pos = c(0, 0.2),
                    ...){
   requireNamespace("survival")
@@ -84,7 +84,11 @@ KMView <- function(survdata, bio, os = "os", event = "event",
                                 labels = labels, include.lowest = TRUE)
 
     ## Calculate the p-value for plotting
-    pval <- signif(summary(cox)$coefficients[interestTerm,5], 3)
+    coefs <- summary(cox)$coefficients
+    pval <- signif(coefs[interestTerm,5], 3)
+    hr <- round(coefs[interestTerm,2], 3)
+    hr.high <- round(exp(coefs[interestTerm, 1] + coefs[interestTerm, 3]), 3)
+    hr.low <- round(exp(coefs[interestTerm, 1] - coefs[interestTerm, 3]), 3)
   }else{
     if(is.null(labels)) labels = unique(tmpDat[, bio])
     names(labels) = unique(tmpDat[, bio])
@@ -100,7 +104,11 @@ KMView <- function(survdata, bio, os = "os", event = "event",
     ## Calculate the p-value for plotting
     cox <- coxph(Surv(time=os, event=event) ~ ., data=tmpDat)
     idx = grepl(interestTerm, rownames(summary(cox)$coefficients))
-    pval <- signif(min(summary(cox)$coefficients[idx,5]), digits=3)
+    coefs <- summary(cox)$coefficients
+    pval <- signif(coefs[idx,5], 3)
+    hr <- round(coefs[idx,2], 3)
+    hr.high <- round(exp(coefs[idx, 1] + coefs[idx, 3]), 3)
+    hr.low <- round(exp(coefs[idx, 1] - coefs[idx, 3]), 3)
   }
   ## Calculate the p-value for plotting
   if(pval.method[1]=="logrank"){
@@ -114,6 +122,11 @@ KMView <- function(survdata, bio, os = "os", event = "event",
                            error = function(e) errflag <<- TRUE)
       if(errflag) return(1)
       pval <- signif(1 - pchisq(diffSurv$chisq, length(diffSurv$n) - 1), digits=3)
+      cox <- coxph(Surv(time=os, event=event) ~ ., data=tmpDat)
+      coefs <- summary(cox)$coefficients
+      hr <- round(coefs[1,2], 3)
+      hr.high <- round(exp(coefs[1, 1] + coefs[1, 3]), 3)
+      hr.low <- round(exp(coefs[1, 1] - coefs[1, 3]), 3)
     }
   }
 
@@ -122,8 +135,9 @@ KMView <- function(survdata, bio, os = "os", event = "event",
     newcox = coxph(Surv(time=os, event=event) ~ ., data=tmpDat)
     p = ggadjustedcurves(newcox, variable = interestTerm, data = tmpDat,
                          legend.labs = labels, ...)
-    p = p + annotate("text", x = quantile(tmpDat$os, pval.pos[1], na.rm = TRUE),
-                     y = pval.pos[2], label = paste("pval:", pval), hjust=0, vjust=1)
+    p = p + annotate("text", x = quantile(tmpDat$os, pval.pos[1], na.rm = TRUE), y = pval.pos[2], 
+                     label = paste("P = ", pval, "HR = ", 
+                                   hr, " [", hr.low, ", ", hr.high, "]"), hjust=0, vjust=1)
     p = p + labs(color = NULL)
     p
   }else{
@@ -132,8 +146,9 @@ KMView <- function(survdata, bio, os = "os", event = "event",
                           data=tmpDat[, c("os", "event", "interestTerm")])
     p = ggsurvplot(fittedSurv, data = tmpDat, surv.median.line = "hv",
                    legend.labs = labels, ...)
-    p = p$plot + annotate("text", x = quantile(tmpDat$os, pval.pos[1], na.rm = TRUE),
-                          y = pval.pos[2], label = paste("pval:", pval), hjust=0, vjust=1)
+    p = p$plot + annotate("text", x = quantile(tmpDat$os, pval.pos[1], na.rm = TRUE), y = pval.pos[2], 
+                          label = paste("P = ", pval, "HR = ", 
+                                        hr, " [", hr.low, ", ", hr.high, "]"), hjust=0, vjust=1)
     p = p + labs(color = NULL)
     p
   }
