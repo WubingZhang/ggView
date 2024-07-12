@@ -22,7 +22,7 @@ KMView <- function(survdata, bio, os = "os", event = "event",
                    adjust = c("age", "gender", "race"),
                    cut = c(0, 0.5, 1), labels = NULL,
                    pval.method = c("cox", "logrank"),
-                   pval.pos = c(0, 0.2),
+                   pval.pos = c(0, 0.2), optimalCut = TRUE, 
                    ...){
   requireNamespace("survival")
   requireNamespace("survminer")
@@ -42,7 +42,40 @@ KMView <- function(survdata, bio, os = "os", event = "event",
     interestTerm = bio
     if(length(unique(tmpDat[, bio]))>3) tmpDat[, bio] = scale(tmpDat[, bio])
     cox <- coxph(Surv(time=os, event=event) ~ ., data=tmpDat)
-    breaks = quantile(tmpDat[,interestTerm], cut)
+    if (optimalCut) {
+        if (any(adjust %in% colnames(tmpDat))) {
+            perm_pvals = lapply(seq(0.1, 0.9, length.out = 100), 
+              function(x) {
+                tmpCut = quantile(tmpDat[, interestTerm], 
+                  x)
+                tmpDat[, interestTerm][tmpDat[, interestTerm] < 
+                  tmpCut] = "low"
+                tmpDat[, interestTerm][tmpDat[, interestTerm] != 
+                  "low"] = "high"
+                tmpDat[, interestTerm] = factor(tmpDat[, 
+                  interestTerm], levels = c("low", "high"))
+                errflag = FALSE
+                diffSurv <- tryCatch(survdiff(Surv(time = os, 
+                  event = event) ~ ., data = tmpDat), error = function(e) errflag <<- TRUE)
+                if (errflag) 
+                  return(1)
+                pval <- signif(1 - pchisq(diffSurv$chisq, 
+                  length(diffSurv$n) - 1), digits = 3)
+              })
+            cut = c(0, seq(0.1, 0.9, length.out = 100)[which.min(unlist(perm_pvals))], 
+              1)
+            breaks = quantile(tmpDat[, interestTerm], cut)
+        }
+        else {
+            tmp <- surv_cutpoint(tmpDat, time = "os", event = "event", 
+              variables = interestTerm)
+            breaks = c(min(tmpDat[, interestTerm]), tmp$cutpoint$cutpoint, 
+              max(tmpDat[, interestTerm]))
+        }
+    }else{
+      breaks = quantile(tmpDat[,interestTerm], cut)
+    }
+                                
     ## Generate labels automatically
     if(is.null(labels)) labels = paste0("level", 1:(length(breaks)-1))
     labels = factor(labels, levels = labels)
