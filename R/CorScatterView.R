@@ -14,7 +14,8 @@
 #' 
 #' @import ggplot
 #' @export
-CorScatterView <- function(dat, x, y, color = NULL, facet = NULL, nrow = 2, cor.method = "pearson"){
+CorScatterView <- function(dat, x, y, color = NULL, facet = NULL, nrow = 2, 
+                           cor.method = "pearson", size = 2, ...){
     gg <- dat[, c(x, y)]
     colnames(gg) <- c("X", "Y")
     gg <- as.data.frame(gg)
@@ -35,9 +36,9 @@ CorScatterView <- function(dat, x, y, color = NULL, facet = NULL, nrow = 2, cor.
     })
     lab1 <- do.call(rbind, lab1)
     if(!is.null(color)){
-        p1 <- ggplot(gg, aes(X, Y)) + geom_point(aes(color = Color))
+        p1 <- ggplot(gg, aes(X, Y)) + geom_point(aes(color = Color), size = size, ...)
     }else{
-        p1 <- ggplot(gg, aes(X, Y)) + geom_point()
+        p1 <- ggplot(gg, aes(X, Y)) + geom_point(size = size, ...)
     }
     if(!is.null(facet)){ 
         p1 <- p1 + facet_wrap(~Group, scales = "free", nrow = nrow) + theme(strip.background = element_blank())
